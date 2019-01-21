@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require 'nmon_commands'
+#require 'optimist'
+
+files = NmonCommands.get_file_list 'atsgroup', 'B5Cacd0d-afD4-49bd-8B04-c394F7F9Fbf7'
+data  = NmonCommands.get files[-3..-1]
+
+ap data[data.keys.first]
