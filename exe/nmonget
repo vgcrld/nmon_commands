@@ -9,6 +9,4 @@ opts = Optimist::options do
 end
 
 files = NmonCommands.get_file_list opts[:customer], opts[:uuid]
-data  = NmonCommands.get files[-3..-1]
-
-ap data[data.keys.first]
+data  = NmonCommands.get files
