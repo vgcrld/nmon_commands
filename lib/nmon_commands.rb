@@ -5,8 +5,9 @@ require 'zlib'
 module NmonCommands
 
   def self.get(filenames,search='EXTERNAL-linux-process,T')
-    filenames = [ filenames ] if filenames.is_a?(String)
     ret = {}
+    return ret if filenames.nil?
+    filenames = [ filenames ] if filenames.is_a?(String)
     filenames.map do |f|
       file = File.new(f)
       gz = Zlib::GzipReader.new(file)
