@@ -3,14 +3,13 @@
 require 'nmon_commands'
 require 'optimist'
 
-opts = Optimist::options do
-  opt :customer, "Customer", type: :string, required: true
-  opt :uuid,     "UUID",     type: :string, required: true
-  opt :limit,    "File lim", type: :integer, default: 1
-end
 
-files = NmonCommands.get_file_list opts[:customer], opts[:uuid], limit: opts[:limit]
-data  = NmonCommands.get files
+opts = Options.new
 
+files = NmonCommands.get_file_list(opts.customer, opts.uuid)
+
+files = NmonCommands.filter_by_dates(files,opts.start,opts.end)
+
+data  = NmonCommands.get(files)
 
 ap data
