@@ -4,7 +4,7 @@ require 'zlib'
 
 module NmonCommands
 
-  def self.get(filenames,search='EXTERNAL-linux-process,T')
+  def self.get(filenames,search='EXTERNAL-(aix|linux)-process,T')
     ret = {}
     return ret if filenames.nil?
     filenames = [ filenames ] if filenames.is_a?(String)
@@ -19,10 +19,11 @@ module NmonCommands
     return ret
   end
 
-  def self.get_file_list(customer,uuid)
-    loc = "/share/prd01/process/#{customer}/archive/by_uuid/#{uuid}/*.linux.gz"
+  def self.get_file_list(customer,uuid,limit: nil)
+    loc = "/share/prd01/process/#{customer}/archive/by_uuid/#{uuid}/*.{linux,aix}.gz"
     files = Dir.glob(loc)
-    return files
+    return files if limit.nil?
+    return files[0..limit-1]
   end
 
 end
