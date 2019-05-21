@@ -8,8 +8,6 @@ opts = Options.new
 
 files = NmonCommands.get_file_list(opts.customer, opts.uuid)
 
-files = NmonCommands.filter_by_dates(files,opts.start,opts.end)
+filtered = NmonCommands.filter_by_dates(files,opts.start,opts.end)
 
-data  = NmonCommands.get(files)
-
-ap data
+ap filtered.first.to_json
