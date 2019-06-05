@@ -1,9 +1,8 @@
 #!/usr/bin/env ruby
 
 require 'rack'
+require 'nmon_commands'
 
-app = Proc.new do |env|
-    ['200', {'Content-Type' => 'text/html'}, ['A barebones rack app.']]
-end
+app = NmonCommands::Viewer
 
 Rack::Handler::WEBrick.run app
