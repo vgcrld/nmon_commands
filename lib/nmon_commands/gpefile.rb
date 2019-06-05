@@ -29,8 +29,7 @@ class GpeFile
       ret[:header] = head.chomp('\\n')
       ret[samp] = lines.map{ |o| o.chomp!('\\n') }
     end
-    return  ret
-    #return  ret.to_json
+    return  ret.to_json
   end
 
   def <=>(cdate)

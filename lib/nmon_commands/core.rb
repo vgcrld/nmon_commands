@@ -6,7 +6,7 @@ require 'zlib'
 module NmonCommands
 
   def self.get_file_list(customer, uuid)
-    loc = "/share/prd01/process/#{customer}/archive/by_uuid/#{uuid}/*.{linux,aix}.gz"
+    loc = "/Users/rdavis/process/#{customer}/archive/by_uuid/#{uuid}/*.{linux,aix}.gz"
     files = Dir.glob(loc).sort.map{ |f| GpeFile.new(f) }
     return files
   end
