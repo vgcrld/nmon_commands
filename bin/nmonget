@@ -9,7 +9,3 @@ opts = Options.new
 files = NmonCommands.get_file_list(opts.customer, opts.uuid)
 
 filtered = NmonCommands.filter_by_dates(files,opts.start,opts.end)
-
-ap files.length
-ap filtered.length
-#ap filtered.first.to_json

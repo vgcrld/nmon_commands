@@ -8,7 +8,7 @@ class Options
     @opts = Optimist::options do
       opt :customer, "Customer",   type: :string, required: true
       opt :uuid,     "UUID",       type: :string, required: true
-      opt :limit,    "File lim",   type: :integer, default: 1
+      opt :limit,    "Limit",      type: :integer, default: 1
       opt :start,    "Start Date", type: :string
       opt :end,      "End Date",   type: :string
     end
