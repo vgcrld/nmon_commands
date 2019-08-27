@@ -1,8 +1,24 @@
 #!/usr/bin/env ruby
 
-require 'rack'
 require 'nmon_commands'
+require 'sinatra'
 
-app = NmonCommands::Viewer
+BIN = File.dirname(__FILE__)
+HOME = File.dirname(BIN)
+VIEWS = File.join(HOME, "templates")
 
-Rack::Handler::WEBrick.run app
+set :port, 10888
+set :bind, 0
+set :run, true
+set :views, VIEWS
+
+get '/view/:customer/:uuid' do
+  haml :view
+end
+
+get '/doc' do
+  haml :doc
+end
+
+
+

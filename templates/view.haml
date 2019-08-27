@@ -1,0 +1,8 @@
+:ruby
+
+  files = NmonCommands.get_file_list( params[:customer], params[:uuid] )
+
+%h1 View File Data
+
+-files.each do |x|
+  =x
