@@ -11,18 +11,20 @@ config = OpenStruct.new(
      bin: File.dirname(__FILE__),
     home: HOME,
    views: File.join(HOME, 'templates'),
-  assets: File.join(HOME, 'assets'),
+  public: File.join(HOME, 'assets'),
     port: 10888,
     bind: 0,
      run: true
 )
+
+ap config
 
 # Configure Sinatra
 set :port, config.port
 set :bind, config.bind
 set :run, config.run
 set :views, config.views
-set :public_folder, config.assets
+set :public_folder, config.public
 
 get '/view/:customer/:uuid' do
   haml :view

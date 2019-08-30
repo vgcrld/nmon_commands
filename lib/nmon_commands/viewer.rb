@@ -7,10 +7,6 @@ module NmonCommands
 
   class Viewer < Sinatra::Base
 
-    get '/' do
-      haml :doc
-    end
-
     get '/view/:customer/:uuid' do
       customer = params[:customer]
       uuid = params[:uuid]
@@ -31,6 +27,10 @@ module NmonCommands
         samp = File.basename(file).split(".").first
         [ samp, uuid ]
       end.to_json
+    end
+
+    get '/' do
+      haml :doc
     end
 
 
