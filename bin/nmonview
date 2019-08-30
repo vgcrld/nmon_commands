@@ -1,15 +1,14 @@
 #!/usr/bin/env ruby
 
 require 'nmon_commands'
-require 'sinatra'
 require 'ostruct'
 
 HOME = File.dirname(File.dirname(__FILE__))
 
 config = OpenStruct.new(
+    home: HOME,
   script: __FILE__,
      bin: File.dirname(__FILE__),
-    home: HOME,
    views: File.join(HOME, 'templates'),
   public: File.join(HOME, 'assets'),
     port: 10888,
@@ -17,22 +16,8 @@ config = OpenStruct.new(
      run: true
 )
 
+# Print the config
 ap config
 
-# Configure Sinatra
-set :port, config.port
-set :bind, config.bind
-set :run, config.run
-set :views, config.views
-set :public_folder, config.public
-
-get '/view/:customer/:uuid' do
-  haml :view
-end
-
-get '/doc' do
-  haml :doc
-end
-
-
-
+# Star the moduler app
+NmonCommands::Viewer.start(config)
