@@ -3,9 +3,11 @@
 require 'nmon_commands'
 require 'awesome_print'
 
-
 opts = Options.new
 
-files = NmonCommands.get_file_list(opts.customer, opts.uuid)
-
-filtered = NmonCommands.filter_by_dates(files,opts.start,opts.end)
+files = NmonCommands.get_file_list(
+  opts.customer,
+  opts.uuid,
+  start_ts: opts.start,
+  end_ts: opts.end
+)

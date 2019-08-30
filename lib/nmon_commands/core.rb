@@ -5,9 +5,10 @@ require 'zlib'
 
 module NmonCommands
 
-  def self.get_file_list(customer, uuid)
-    loc = "/Users/rdavis/process/#{customer}/archive/by_uuid/#{uuid}/*.{linux,aix}.gz"
+  def self.get_file_list(customer, uuid, start_ts: nil, end_ts: nil)
+    loc = "/share/prd01/process/#{customer}/archive/by_uuid/#{uuid}/*.{linux,aix}.gz"
     files = Dir.glob(loc).sort.map{ |f| GpeFile.new(f) }
+    files = filter_by_dates(files,start_ts,end_ts)
     return files
   end
 
