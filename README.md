@@ -19,6 +19,19 @@ Or install it yourself as:
 
 ## Usage
 
+This is a small sinatra app used to get familiar with the Webix ui controls.
+
+Start the app by 
+
+``` 
+bundle exec nmonview 
+```
+
+And starting: 
+
+```
+http://hostname:10888/view/:customer/:uuid
+```
 
 ## Development
 
