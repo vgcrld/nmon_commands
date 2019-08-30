@@ -1,8 +1,19 @@
 :ruby
 
-  files = NmonCommands.get_file_list( params[:customer], params[:uuid] )
+  customer = params[:customer]
+  uuid = params[:uuid]
+  start_ts = params[:start]
+  end_ts = params[:end]
+
+  files = NmonCommands.get_file_list( customer, uuid, start_ts: start_ts, end_ts: end_ts )
+
+/ Include Webix and Private Scripts
+%link{ rel: "stylesheet",  href: "http://cdn.webix.com/edge/webix.css", type: "text/css"}
+%script{ src: "http://cdn.webix.com/edge/webix.js", type: "text/javascript" }
 
 %h1 View File Data
 
--files.each do |x|
-  =x
+#app
+
+%script{ src: "/javascripts/test.js", type: "text/javascript" }
+
