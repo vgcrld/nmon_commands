@@ -2,15 +2,27 @@
 
 require 'nmon_commands'
 require 'sinatra'
+require 'ostruct'
 
-BIN = File.dirname(__FILE__)
-HOME = File.dirname(BIN)
-VIEWS = File.join(HOME, "templates")
+HOME = File.dirname(File.dirname(__FILE__))
 
-set :port, 10888
-set :bind, 0
-set :run, true
-set :views, VIEWS
+config = OpenStruct.new(
+  script: __FILE__,
+     bin: File.dirname(__FILE__),
+    home: HOME,
+   views: File.join(HOME, 'templates'),
+  assets: File.join(HOME, 'assets'),
+    port: 10888,
+    bind: 0,
+     run: true
+)
+
+# Configure Sinatra
+set :port, config.port
+set :bind, config.bind
+set :run, config.run
+set :views, config.views
+set :public_folder, config.assets
 
 get '/view/:customer/:uuid' do
   haml :view
