@@ -18,7 +18,7 @@ module NmonCommands
     end
 
     # View a file
-    get '/view/:customer/:uuid(/:start)?(/:end)?' do
+    get '/view' do
       haml :view
     end
 
