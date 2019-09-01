@@ -2,6 +2,7 @@ require 'nmon_commands/version'
 require 'nmon_commands/gpefile'
 require 'awesome_print'
 require 'zlib'
+require "json"
 
 module NmonCommands
 
@@ -10,6 +11,12 @@ module NmonCommands
     files = Dir.glob(loc).sort.map{ |f| GpeFile.new(f) }
     files = filter_by_dates(files,start_ts,end_ts)
     return files
+  end
+
+  def self.get_customers
+    Dir.glob("/share/prd01/process/*").map do |o|
+      { name: File.basename(o) }
+    end.to_json
   end
 
   def self.filter_by_dates(files,start_ts,end_ts)
