@@ -8,27 +8,77 @@ grid_data = [
   { id:"time",  header:"TIME" , width:60},
   { id:"cmd",   header:"CMD",   width:500},
 ]
-
 grid_data = [
   { id:"name",  header:"Customer", width:500}
 ]
+var d = new Date();
+d.setHours(d.getHours() - 1)
 
-start_picker = { view:"datepicker", timepicker:true, label:"Start Date", name:"start", stringResult:true, format:"%d %M %Y at %H:%i", width: 300 }
-end_picker   = { view:"datepicker", timepicker:true, label:"End Date",   name:"end",   stringResult:true, format:"%d %M %Y at %H:%i", width: 300 }
-range = {
-  view:"daterangepicker", name:"default", label:"Default",
-  value:{ start: new Date(), end: webix.Date.add(new Date(), 1, "month") }
+var http_request = function(url, callback) {
+    var Http = new XMLHttpRequest();
+    Http.open("GET", url, true);
+    Http.send();
+
+    Http.onreadystatechange = (e) => {
+        if (Http.readyState == 4) {
+            data = JSON.parse(Http.response)
+            callback(data);
+        }
+    }
 }
-submit = { view: "button", label: "Submit", width: 100 }
-combo = {
-  view:"combo", id:"combo1", width:300, label:'Customers',
+start_picker = {
+    view:"datepicker",
+    value: d,
+    timepicker:true,
+    label:"Start Date",
+    name:"start",
+    stringResult:true,
+    format:"%d %M %Y at %H:%i",
+    width: 275
+}
+end_picker   = {
+    view:"datepicker",
+    value: new Date(),
+    timepicker:true,
+    label:"End Date",
+    name:"end",
+    stringResult:true,
+    format:"%d %M %Y at %H:%i",
+    width: 275
+}
+submit = {
+    view: "button", label: "Submit", width: 90,
+}
+customer = {
+  view:"combo", id:"customer", width:200, label:'Customers',
   name:"fruit1",
   value:1,
   options:{
+    filter:function(item, value){
+      if(item.name.toString().toLowerCase().indexOf(value.toLowerCase())===0)
+        return true;
+        return false;
+    },
     body:{
       template:"#name#",
       yCount:10,
       data: customers
+    }
+  }
+}
+uuid = {
+  view:"combo", id:"uuid", width:300, label:'Customers',
+  value:1,
+  options:{
+    filter:function(item, value){
+      if(item.name.toString().toLowerCase().indexOf(value.toLowerCase())===0)
+        return true;
+        return false;
+    },
+    body:{
+      template:"#name#",
+      yCount:10,
+      data: "",
     }
   }
 }
@@ -38,9 +88,7 @@ table = {
     autoheight:true,
     autowidth:true,
     data: customers
-      //{ uid:"0", pid:"1", ppid:"0", c:"0", stime:"1Aug19", tty:"??", time:"32:20.55", cmd:"/sbin/launchd" } ]
-  }
-
+}
 tabview = {
   borderless: true,
   view: "tabview",
@@ -54,11 +102,19 @@ tabview = {
     body: {}
   }]
 }
-
 webix.ui({
   container: "app",
   rows:[
-    { cols: [ start_picker, end_picker, combo, submit ] },
+    { cols: [ start_picker, end_picker, customer, uuid, submit ] },
     tabview
   ]
 }).show();
+
+var home = "http://localhost:10888";
+
+$$("customer").attachEvent("onchange", function(new_value, old_value){
+  http_request(home.concat("/uuid/", new_value), function() {$$("uuid").getPopup().getList().parse(data)});
+})
+
+
+

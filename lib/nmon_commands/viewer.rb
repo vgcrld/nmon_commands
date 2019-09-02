@@ -22,6 +22,10 @@ module NmonCommands
       haml :view
     end
 
+    get "/uuid/:customer" do
+      NmonCommands.get_uuid(params[:customer])
+    end
+
     # Information
     get '/doc' do
       haml :doc
