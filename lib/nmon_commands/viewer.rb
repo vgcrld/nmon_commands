@@ -2,6 +2,7 @@ require 'sinatra'
 require 'awesome_print'
 require 'json'
 require 'haml'
+require "date"
 
 module NmonCommands
 
@@ -24,6 +25,10 @@ module NmonCommands
 
     get "/uuid/:customer" do
       NmonCommands.get_uuid(params[:customer])
+    end
+
+    get "/getfile/:customer/:uuid/:start_ts/:end_ts" do
+        NmonCommands.get_file_list(params[:customer], params[:uuid], params[:start_ts], params[:end_ts])
     end
 
     # Information

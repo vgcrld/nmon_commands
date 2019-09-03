@@ -11,9 +11,25 @@ grid_data = [
 grid_data = [
   { id:"name",  header:"Customer", width:500}
 ]
+//variables
+var home = "http://localhost:10888";
 var d = new Date();
 d.setHours(d.getHours() - 1)
+var str_date = webix.Date.strToDate("%Y-%m-%d %H:%i");
 
+//functions
+var gen_file_url = function() {
+    customer = $$("customer").getText();
+    uuid_choice = $$("uuid").getText();
+    start_time = str_date($$("start").getValue()).getTime();
+    end_time = str_date($$("end").getValue()).getTime();
+
+    console.log("customer: ".concat(customer))
+    console.log("uuid: ".concat(uuid_choice))
+    console.log("start: ".concat(start_time))
+    console.log("end: ".concat(end_time))
+    http_request(home.concat("/getfile/", customer, "/", uuid_choice, "/",  start_time, "/", end_time))
+}
 var http_request = function(url, callback) {
     var Http = new XMLHttpRequest();
     Http.open("GET", url, true);
@@ -26,11 +42,13 @@ var http_request = function(url, callback) {
         }
     }
 }
+//webix objects
 start_picker = {
     view:"datepicker",
     value: d,
     timepicker:true,
     label:"Start Date",
+    id: "start",
     name:"start",
     stringResult:true,
     format:"%d %M %Y at %H:%i",
@@ -42,12 +60,13 @@ end_picker   = {
     timepicker:true,
     label:"End Date",
     name:"end",
+    id: "end",
     stringResult:true,
     format:"%d %M %Y at %H:%i",
     width: 275
 }
 submit = {
-    view: "button", label: "Submit", width: 90,
+    view: "button", label: "Submit", width: 90, click: gen_file_url
 }
 customer = {
   view:"combo", id:"customer", width:200, label:'Customers',
@@ -102,6 +121,7 @@ tabview = {
     body: {}
   }]
 }
+//webix ui
 webix.ui({
   container: "app",
   rows:[
@@ -110,10 +130,12 @@ webix.ui({
   ]
 }).show();
 
-var home = "http://localhost:10888";
-
+//events
 $$("customer").attachEvent("onchange", function(new_value, old_value){
-  http_request(home.concat("/uuid/", new_value), function() {$$("uuid").getPopup().getList().parse(data)});
+  http_request(home.concat("/uuid/", new_value), function() {
+    $$("uuid").getPopup().getList().clearAll();
+    $$("uuid").getPopup().getList().parse(data)
+  });
 })
 
 
