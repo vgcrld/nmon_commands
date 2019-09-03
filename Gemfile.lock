@@ -5,6 +5,7 @@ PATH
       haml
       optimist
       sinatra
+      sinatra-cross_origin
 
 GEM
   remote: https://rubygems.org/
@@ -24,6 +25,7 @@ GEM
       rack (~> 2.0)
       rack-protection (= 2.0.7)
       tilt (~> 2.0)
+    sinatra-cross_origin (0.4.0)
     temple (0.8.1)
     tilt (2.0.9)
 
@@ -37,4 +39,4 @@ DEPENDENCIES
   rake
 
 BUNDLED WITH
-   1.16.2
+   1.17.1

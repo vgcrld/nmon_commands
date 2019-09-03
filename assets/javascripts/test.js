@@ -12,7 +12,7 @@ grid_data = [
   { id:"name",  header:"Customer", width:500}
 ]
 //variables
-var home = "http://localhost:10888";
+var home = "http://karl.galileosuite.com:10888";
 var d = new Date();
 d.setHours(d.getHours() - 1)
 var str_date = webix.Date.strToDate("%Y-%m-%d %H:%i");
@@ -86,7 +86,7 @@ customer = {
   }
 }
 uuid = {
-  view:"combo", id:"uuid", width:300, label:'Customers',
+  view:"combo", id:"uuid", width:300, label:'UUIDs',
   value:1,
   options:{
     filter:function(item, value){
