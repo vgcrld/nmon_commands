@@ -21,8 +21,9 @@ module NmonCommands
 
   def self.get_uuid(customer)
     Dir.glob("/share/prd01/process/#{customer}/archive/by_uuid/*").map do |o|
-      { name: File.basename(o), id: File.basename(o) }
-    end.to_json
+      uuid = File.basename(o)
+      { name: uuid, id: uuid } if uuid.match(/^[[:xdigit:]]{8}-([[:xdigit:]]{4}-){3}[[:xdigit:]]{8}/)
+    end.compact.to_json
   end
 
   def self.filter_by_dates(files,start_ts,end_ts)
