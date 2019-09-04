@@ -15,7 +15,7 @@ module NmonCommands
 
   def self.get_customers
     Dir.glob("/share/prd01/process/*").map do |o|
-      { name: File.basename(o), id: File.basename(o) }
+      { name: File.basename(o) }
     end.to_json
   end
 

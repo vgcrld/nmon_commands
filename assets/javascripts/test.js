@@ -32,6 +32,7 @@ var gen_file_url = function() {
 }
 var http_request = function(url, callback) {
     var Http = new XMLHttpRequest();
+    console.log(url)
     Http.open("GET", url, true);
     Http.send();
 
