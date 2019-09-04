@@ -46,7 +46,7 @@ class GpeFile
   def make_date(filename)
     matcher = /^.*\.(\d{8})\.(\d{6})\.(\w{3})__.*/
     ts = File.basename(filename).match(matcher).captures.join(' ')
-    ret = DateTime.strptime(ts,'%Y%m%d %H%M%S %Z').strftime('%s')
+    ret = DateTime.strptime(ts,'%Y%m%d %H%M%S %Z').strftime('%s').to_i
     return ret
   end
 

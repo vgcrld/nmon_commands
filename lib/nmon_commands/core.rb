@@ -27,7 +27,7 @@ module NmonCommands
   end
 
   def self.filter_by_dates(files,start_ts,end_ts)
-    ret = files.select{ |file| file.between?(start_ts,end_ts) }
+    ret = files.select{ |file| file.between?(start_ts/1000,end_ts/1000) }
     return ret
   end
 
