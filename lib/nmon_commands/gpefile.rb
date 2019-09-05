@@ -27,7 +27,7 @@ class GpeFile
         [ line.split(" ",13) ].flatten
       end.compact
     end
-    return ret.to_json
+    return ret
   end
 
   # Implement for comparable

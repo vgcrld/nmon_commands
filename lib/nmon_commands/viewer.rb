@@ -38,7 +38,9 @@ module NmonCommands
     end
 
     get "/getfile/:customer/:uuid/:start_ts/:end_ts" do
-      NmonCommands.get_file_list(params[:customer], params[:uuid], params[:start_ts], params[:end_ts])
+      start_time = params[:start_ts].to_i/1000
+      end_time = params[:end_ts].to_i/1000
+      NmonCommands.get_file_list(params[:customer], params[:uuid], start_time, end_time)
     end
 
     # Information
