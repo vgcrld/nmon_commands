@@ -15,7 +15,7 @@ class GpeFile
     return @filename
   end
 
-  def to_json
+  def get_data
     ret = {}
     raw_data.each_with_index do |sample,i|
       lines = sample.lines('\n')
@@ -24,12 +24,13 @@ class GpeFile
       ret[samp] = lines.map do |o|
         line = o.chomp!('\n')
         next if line.nil?
-        [ head, o, line.split(" ",13) ].flatten
-      end
+        [ line.split(" ",13) ].flatten
+      end.compact
     end
     return ret.to_json
   end
 
+  # Implement for comparable
   def <=>(cdate)
     @date <=> cdate
   end
