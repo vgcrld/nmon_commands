@@ -41,7 +41,7 @@ var gen_file_url = function() {
     home.concat("/getdates/", customer, "/", uuid_choice, "/",  start_time, "/", end_time),
     function() {
       console.log(data)
-      //$$("uuid_times").parse(data);
+      $$("uuid_times").parse(data);
     }
   )
 }
@@ -135,7 +135,7 @@ tabview = {
 uuid_times = {
     view:"list",
     id:"uuid_times",
-    template:"#title#",
+    template:"#interval_date#",
     data: "",
     select:true
   };
