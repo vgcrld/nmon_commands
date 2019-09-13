@@ -7,6 +7,10 @@ require "date"
 
 module NmonCommands
 
+  def self.get_intervals(files)
+    return files.map{ |file| file.file_intervals }.flatten
+  end
+
   def self.get_file_list(customer, uuid, start_ts, end_ts)
     loc = "/share/prd01/process/#{customer}/archive/by_uuid/#{uuid}/*.{linux,aix}.gz"
     files = Dir.glob(loc).sort.map{ |f| GpeFile.new(f) }
