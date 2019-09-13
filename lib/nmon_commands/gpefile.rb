@@ -15,11 +15,17 @@ class GpeFile
     return @filename
   end
 
-  def get_data
+  def get_dates
+    { time: DateTime.strptime(date.to_s, "%s") }
+  end
+
+  def get_data(start_ts)
     ret = {}
     raw_data.each_with_index do |sample,i|
       lines = sample.lines('\n')
       t, samp, head = lines.shift.split(",",3)
+      ret[:title] = DateTime.strptime(date.to_s, "%s")
+        #DateTime.strptime(((i * 1800) + start_ts).to_s, "%s").to_s
       ret[:header] = head.chomp('\n').split(" ",13)
       ret[samp] = lines.map do |o|
         line = o.chomp!('\n')

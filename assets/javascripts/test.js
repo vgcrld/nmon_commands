@@ -12,23 +12,38 @@ grid_data = [
   { id:"name",  header:"Customer", width:500}
 ]
 //variables
-var home = "http://karl.galileosuite.com:10888";
+var home = "http://karl.galileosuite.com:10999";
 var d = new Date();
-d.setHours(d.getHours() - 1)
+d.setHours(d.getHours() - 3)
 var str_date = webix.Date.strToDate("%Y-%m-%d %H:%i");
 
 //functions
+test =  "2019-09-08T02:00:01+00:00"
+var myformat = webix.Date.dateToStr("%Y-%m-%dT%H:%i:%s");
+console.log(myformat(test))
+var epoc_to_date = function(secs) {
+  secs = secs * 1000;
+  d = new Date(secs);
+  return d
+}
 var gen_file_url = function() {
-    customer = $$("customer").getText();
-    uuid_choice = $$("uuid").getText();
-    start_time = str_date($$("start").getValue()).getTime();
-    end_time = str_date($$("end").getValue()).getTime();
+  customer = $$("customer").getText();
+  uuid_choice = $$("uuid").getText();
+  start_time = str_date($$("start").getValue()).getTime();
+  end_time = str_date($$("end").getValue()).getTime();
 
-    console.log("customer: ".concat(customer))
-    console.log("uuid: ".concat(uuid_choice))
-    console.log("start: ".concat(start_time))
-    console.log("end: ".concat(end_time))
-    http_request(home.concat("/getfile/", customer, "/", uuid_choice, "/",  start_time, "/", end_time))
+  console.log("customer: ".concat(customer))
+  console.log("uuid: ".concat(uuid_choice))
+  console.log("start: ".concat(start_time))
+  console.log("end: ".concat(end_time))
+    console.log(home.concat("/getdates/", customer, "/", uuid_choice, "/",  start_time, "/", end_time))
+  http_request(
+    home.concat("/getdates/", customer, "/", uuid_choice, "/",  start_time, "/", end_time),
+    function() {
+      console.log(data)
+      //$$("uuid_times").parse(data);
+    }
+  )
 }
 var http_request = function(url, callback) {
     var Http = new XMLHttpRequest();
@@ -69,9 +84,7 @@ submit = {
     view: "button", label: "Submit", width: 90, click: gen_file_url
 }
 customer = {
-  view:"combo", id:"customer", width:200, label:'Customers',
-  name:"fruit1",
-  value:1,
+  view:"combo", id:"customer", width:275, label:'Customers',
   options:{
     filter:function(item, value){
       if(item.name.toString().toLowerCase().indexOf(value.toLowerCase())===0)
@@ -81,12 +94,12 @@ customer = {
     body:{
       template:"#name#",
       yCount:10,
-      data: customers
+      data: customers,
     }
   }
 }
 uuid = {
-  view:"combo", id:"uuid", width:300, label:'UUIDs',
+  view:"combo", id:"uuid", width:275, label:'UUIDs',
   value:1,
   options:{
     filter:function(item, value){
@@ -104,8 +117,6 @@ uuid = {
 table = {
     view:"datatable",
     columns: grid_data,
-    autoheight:true,
-    autowidth:true,
     data: customers
 }
 tabview = {
@@ -121,12 +132,20 @@ tabview = {
     body: {}
   }]
 }
+uuid_times = {
+    view:"list",
+    id:"uuid_times",
+    template:"#title#",
+    data: "",
+    select:true
+  };
 //webix ui
 webix.ui({
   container: "app",
   rows:[
     { cols: [ start_picker, end_picker, customer, uuid, submit ] },
-    tabview
+    { cols:[ { header:"Times", width: 300, body: uuid_times  } , table ]}
+
   ]
 }).show();
 
