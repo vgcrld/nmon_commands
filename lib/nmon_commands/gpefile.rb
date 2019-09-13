@@ -15,17 +15,13 @@ class GpeFile
     return @filename
   end
 
-  def get_dates
-    { time: DateTime.strptime(date.to_s, "%s") }
-  end
-
   def get_data(start_ts)
     ret = {}
-    raw_data.each_with_index do |sample,i|
+    rows = grep_file_rows
+    rows.each_with_index do |sample,i|
       lines = sample.lines('\n')
       t, samp, head = lines.shift.split(",",3)
       ret[:title] = DateTime.strptime(date.to_s, "%s")
-        #DateTime.strptime(((i * 1800) + start_ts).to_s, "%s").to_s
       ret[:header] = head.chomp('\n').split(" ",13)
       ret[samp] = lines.map do |o|
         line = o.chomp!('\n')
@@ -41,8 +37,33 @@ class GpeFile
     @date <=> cdate
   end
 
-  def raw_data
-    search='EXTERNAL-(aix|linux)-process,T'
+  def file_intervals
+    intervals = get_all_intervals
+    rows = grep_file_rows
+    rows.map do |o|
+      interval = (o.split(",",3)[1])
+      {
+        interval: interval,
+        interval_date: intervals[interval],
+        file_date: Time.at(self.date),
+        file_epoch: self.date,
+        file: self.filename
+      }
+    end
+  end
+
+  def get_all_intervals
+    lines = grep_file_rows('ZZZZ,T')
+    ret = {}
+    lines.map do |o|
+      o.chomp!
+      keys = o.split(",")
+      ret[keys[1]] = "#{keys[3]} #{keys[2]}"
+    end
+    return ret
+  end
+
+  def grep_file_rows(search='EXTERNAL-(aix|linux)-process,T')
     file = File.new(self.filename)
     gz = Zlib::GzipReader.new(file)
     return gz.read.lines.select{ |o| o.match(Regexp.new(search)) }
@@ -56,7 +77,5 @@ class GpeFile
     ret = DateTime.strptime(ts,'%Y%m%d %H%M%S %Z').strftime('%s').to_i
     return ret
   end
-
-
 
 end

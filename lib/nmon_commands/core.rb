@@ -7,18 +7,11 @@ require "date"
 
 module NmonCommands
 
-  def self.get_dates(customer, uuid, start_ts, end_ts)
-    loc = "/share/prd01/process/#{customer}/archive/by_uuid/#{uuid}/*.{linux,aix}.gz"
-    files = Dir.glob(loc).sort.map{ |f| GpeFile.new(f) }
-    filtered = filter_by_dates(files,start_ts,end_ts)
-    return filtered.map { |o| o.get_dates }.to_json
-  end
-
   def self.get_file_list(customer, uuid, start_ts, end_ts)
     loc = "/share/prd01/process/#{customer}/archive/by_uuid/#{uuid}/*.{linux,aix}.gz"
     files = Dir.glob(loc).sort.map{ |f| GpeFile.new(f) }
     filtered = filter_by_dates(files,start_ts,end_ts)
-    return filtered.map{ |o| o.get_data(start_ts) }.to_json
+    return filtered
   end
 
   def self.filter_by_dates(files,start_ts,end_ts)
