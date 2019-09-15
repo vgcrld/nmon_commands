@@ -4,6 +4,7 @@ require 'awesome_print'
 require 'json'
 require 'haml'
 require "date"
+require "uri"
 
 module NmonCommands
 
@@ -49,6 +50,14 @@ module NmonCommands
       files = NmonCommands.get_file_list(params[:customer], params[:uuid], start_time, end_time)
       times = NmonCommands.get_intervals(files)
       times.to_json
+    end
+
+    get "/gettable/:interval/*" do
+      interval = params[:interval]
+      file_path = params[:splat][0]
+      #put in method to return table as an json object
+      #return for testing
+      {interval: interval, file_path: file_path}.to_json
     end
 
     # Information

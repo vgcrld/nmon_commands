@@ -11,6 +11,9 @@ module NmonCommands
     return files.map{ |file| file.file_intervals }.flatten
   end
 
+  def get_table(customer, uuid)
+  end
+
   def self.get_file_list(customer, uuid, start_ts, end_ts)
     loc = "/share/prd01/process/#{customer}/archive/by_uuid/#{uuid}/*.{linux,aix}.gz"
     files = Dir.glob(loc).sort.map{ |f| GpeFile.new(f) }

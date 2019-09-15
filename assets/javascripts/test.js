@@ -14,7 +14,7 @@ grid_data = [
 //variables
 var home = "http://karl.galileosuite.com:10999";
 var d = new Date();
-d.setHours(d.getHours() - 3)
+d.setHours(d.getHours() - 1)
 var str_date = webix.Date.strToDate("%Y-%m-%d %H:%i");
 
 //functions
@@ -27,25 +27,28 @@ var epoc_to_date = function(secs) {
   return d
 }
 var gen_file_url = function() {
-  customer = $$("customer").getText();
-  uuid_choice = $$("uuid").getText();
-  start_time = str_date($$("start").getValue()).getTime();
-  end_time = str_date($$("end").getValue()).getTime();
+  var customer = $$("customer").getText();
+  var uuid_choice = $$("uuid").getText();
+  var start_time = str_date($$("start").getValue()).getTime();
+  var end_time = str_date($$("end").getValue()).getTime();
 
   console.log("customer: ".concat(customer))
   console.log("uuid: ".concat(uuid_choice))
   console.log("start: ".concat(start_time))
   console.log("end: ".concat(end_time))
-    console.log(home.concat("/getdates/", customer, "/", uuid_choice, "/",  start_time, "/", end_time))
-  http_request(
-    home.concat("/getdates/", customer, "/", uuid_choice, "/",  start_time, "/", end_time),
-    function() {
+
+  current_url = home.concat("/getdates/", customer, "/", uuid_choice, "/",  start_time, "/", end_time)
+    console.log(current_url)
+  http_request(current_url, function() {
       console.log(data)
+      $$("uuid_times").clearAll();
       $$("uuid_times").parse(data);
     }
   )
 }
-var http_request = function(url, callback) {
+
+
+http_request = function(url, callback) {
     var Http = new XMLHttpRequest();
     Http.open("GET", url, true);
     Http.send();
@@ -58,7 +61,8 @@ var http_request = function(url, callback) {
     }
 }
 //webix objects
-start_picker = {
+
+var start_picker = {
     view:"datepicker",
     value: d,
     timepicker:true,
@@ -68,8 +72,9 @@ start_picker = {
     stringResult:true,
     format:"%d %M %Y at %H:%i",
     width: 275
-}
-end_picker   = {
+};
+
+var end_picker   = {
     view:"datepicker",
     value: new Date(),
     timepicker:true,
@@ -80,10 +85,10 @@ end_picker   = {
     format:"%d %M %Y at %H:%i",
     width: 275
 }
-submit = {
+var submit = {
     view: "button", label: "Submit", width: 90, click: gen_file_url
 }
-customer = {
+var customer = {
   view:"combo", id:"customer", width:275, label:'Customers',
   options:{
     filter:function(item, value){
@@ -98,7 +103,8 @@ customer = {
     }
   }
 }
-uuid = {
+
+var uuid = {
   view:"combo", id:"uuid", width:275, label:'UUIDs',
   value:1,
   options:{
@@ -114,12 +120,14 @@ uuid = {
     }
   }
 }
-table = {
+
+var table = {
     view:"datatable",
     columns: grid_data,
     data: customers
 }
-tabview = {
+
+var tabview = {
   borderless: true,
   view: "tabview",
   cells: [
@@ -132,13 +140,15 @@ tabview = {
     body: {}
   }]
 }
-uuid_times = {
+
+var uuid_times = {
     view:"list",
     id:"uuid_times",
     template:"#interval_date#",
     data: "",
     select:true
   };
+
 //webix ui
 webix.ui({
   container: "app",
@@ -155,7 +165,14 @@ $$("customer").attachEvent("onchange", function(new_value, old_value){
     $$("uuid").getPopup().getList().clearAll();
     $$("uuid").getPopup().getList().parse(data)
   });
-})
+});
 
+$$("uuid_times").attachEvent("onItemClick", function(id, e, node){;
+   var item = this.getItem(id);
+   http_request(home.concat("/gettable/", item.interval, "/", item.file), function() {
+     //process table object here
+     console.log(data)
+   })
+});
 
 
