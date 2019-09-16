@@ -20,6 +20,7 @@ module NmonCommands
 
       configure do
         enable :cross_origin
+        enable :sessions
       end
 
       before do
@@ -29,21 +30,27 @@ module NmonCommands
       run!
     end
 
-    # View a file
+    # Pages
     get '/view' do
       haml :view
     end
 
+    # endpoints - return uuids for a customer
     get "/uuid/:customer" do
-      NmonCommands.get_uuid(params[:customer])
+      customer = params[:customer]
+      uuids = NmonCommands.get_uuid(customer)
+      session[customer] = { uuids: uuids }
+      uuids
     end
 
+    # Return files for a custoerm:uuid:start:end
     get "/getfile/:customer/:uuid/:start_ts/:end_ts" do
       start_time = params[:start_ts].to_i/1000
       end_time = params[:end_ts].to_i/1000
       NmonCommands.get_file_list(params[:customer], params[:uuid], start_time, end_time)
     end
 
+    # Return the time intervals
     get "/getdates/:customer/:uuid/:start_ts/:end_ts" do
       start_time = params[:start_ts].to_i/1000
       end_time = params[:end_ts].to_i/1000
@@ -52,6 +59,7 @@ module NmonCommands
       times.to_json
     end
 
+    # Return the table ps data from the file
     get "/gettable/:interval/*" do
       interval = params[:interval]
       file_path = params[:splat][0]
@@ -60,11 +68,13 @@ module NmonCommands
       {interval: interval, file_path: file_path}.to_json
     end
 
-    # Information
+
+    # Test page
     get '/doc' do
       haml :doc
     end
 
+    # Set Sinatra options to allow CORRS
     options "*" do
       response.headers["Allow"] = "GET, PUT, POST, DELETE, OPTIONS"
       response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, Accept, X-User-Email, X-Auth-Token"
