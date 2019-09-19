@@ -63,9 +63,14 @@ module NmonCommands
     get "/gettable/:interval/*" do
       interval = params[:interval]
       file_path = params[:splat][0]
-      #put in method to return table as an json object
+      #working just returing a single table
+      #the grep_file_rows File.open method is not finding the file even though its there
+      table = GpeFile.new(file_path)
+      rows = table.get_table(interval)
+      ap rows
+
       #return for testing
-      {interval: interval, file_path: file_path}.to_json
+      {interval: rows, file_path: file_path}.to_json
     end
 
 

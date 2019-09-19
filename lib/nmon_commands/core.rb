@@ -7,13 +7,12 @@ require "date"
 
 module NmonCommands
 
+  #takes array of file strings and returns the intervals
   def self.get_intervals(files)
     return files.map{ |file| file.file_intervals }.flatten
   end
 
-  def get_table(customer, uuid)
-  end
-
+  #takes file location and pulls the ones in the correct time
   def self.get_file_list(customer, uuid, start_ts, end_ts)
     loc = "/share/prd01/process/#{customer}/archive/by_uuid/#{uuid}/*.{linux,aix}.gz"
     files = Dir.glob(loc).sort.map{ |f| GpeFile.new(f) }
@@ -21,16 +20,19 @@ module NmonCommands
     return filtered
   end
 
+  #takes a list of files and returns the ones in a right time interval
   def self.filter_by_dates(files,start_ts,end_ts)
     return files.select{ |file| file.between?(start_ts,end_ts) }
   end
 
+  #for retuning customer list get request
   def self.get_customers
     Dir.glob("/share/prd01/process/*").map do |o|
       { name: File.basename(o), id: File.basename(o), title: File.basename(o) }
     end.to_json
   end
 
+  #for returning uuid list get request
   def self.get_uuid(customer)
     Dir.glob("/share/prd01/process/#{customer}/archive/by_uuid/*").map do |o|
       uuid = File.basename(o)

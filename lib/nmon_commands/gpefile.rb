@@ -8,13 +8,20 @@ class GpeFile
 
   def initialize(filename)
     @filename = filename
-    @date     = make_date(filename)
+    #@date     = make_date(filename)
   end
 
   def to_s
     return @filename
   end
 
+  def get_table(interval)
+    rows = grep_file_rows(interval.to_s)
+    ap rows
+    return rows
+  end
+
+  #currently not in use
   def get_data(start_ts)
     ret = {}
     rows = grep_file_rows
@@ -37,6 +44,7 @@ class GpeFile
     @date <=> cdate
   end
 
+  #builds an object with file and interval information
   def file_intervals
     intervals = get_all_intervals
     rows = grep_file_rows
@@ -52,6 +60,7 @@ class GpeFile
     end
   end
 
+  ## scans a file and returns array of intervals
   def get_all_intervals
     lines = grep_file_rows('ZZZZ,T')
     ret = {}
@@ -63,6 +72,7 @@ class GpeFile
     return ret
   end
 
+  #scans a file line by line and only selects them if they match search
   def grep_file_rows(search='EXTERNAL-(aix|linux)-process,T')
     file = File.new(self.filename)
     gz = Zlib::GzipReader.new(file)
@@ -70,6 +80,7 @@ class GpeFile
   end
 
   private
+
 
   def make_date(filename)
     matcher = /^.*\.(\d{8})\.(\d{6})\.(\w{3})__.*/
