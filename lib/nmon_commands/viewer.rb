@@ -10,6 +10,7 @@ module NmonCommands
 
   class Viewer < Sinatra::Base
 
+
     def self.start(config)
 
       set :port, config.port
@@ -60,17 +61,16 @@ module NmonCommands
     end
 
     # Return the table ps data from the file
-    get "/gettable/:interval/*" do
+    get "/gettable/:interval/:id/*" do
       interval = params[:interval]
+      id = params[:id]
       file_path = params[:splat][0]
       #working just returing a single table
       #the grep_file_rows File.open method is not finding the file even though its there
-      table = GpeFile.new(file_path)
-      rows = table.get_table(interval)
-      ap rows
-
+      #table = GpeFile.new(file_path)
+      #rows = table.get_table(interval)
       #return for testing
-      {interval: rows, file_path: file_path}.to_json
+      {name: interval, file_path: file_path, id: id}.to_json
     end
 
 

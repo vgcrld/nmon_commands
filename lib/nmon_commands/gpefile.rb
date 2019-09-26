@@ -8,7 +8,7 @@ class GpeFile
 
   def initialize(filename)
     @filename = filename
-    #@date     = make_date(filename)
+    @date     = make_date(filename)
   end
 
   def to_s

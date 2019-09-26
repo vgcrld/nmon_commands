@@ -1,3 +1,17 @@
+/*
+var tabview =
+  { borderless: true,
+  view: "tabview",
+  cells: [
+  {
+    header: "empty",
+    body: table
+  },
+  {
+    header: "empty",
+    body: {}
+  }]
+}
 grid_data = [
   { id:"uid",   header:"UID",   width:60},
   { id:"pid",   header:"PID",   width:60},
@@ -8,8 +22,10 @@ grid_data = [
   { id:"time",  header:"TIME" , width:60},
   { id:"cmd",   header:"CMD",   width:500},
 ]
-grid_data = [
-  { id:"name",  header:"Customer", width:500}
+*/
+var grid_data = [
+  { id:"name",  header:"Interval", width:100},
+  { id:"file_path",  header:"Location", width:500}
 ]
 //variables
 var home = "http://karl.galileosuite.com:10999";
@@ -32,11 +48,6 @@ var gen_file_url = function() {
   var start_time = str_date($$("start").getValue()).getTime();
   var end_time = str_date($$("end").getValue()).getTime();
 
-  console.log("customer: ".concat(customer))
-  console.log("uuid: ".concat(uuid_choice))
-  console.log("start: ".concat(start_time))
-  console.log("end: ".concat(end_time))
-
   current_url = home.concat("/getdates/", customer, "/", uuid_choice, "/",  start_time, "/", end_time)
     console.log(current_url)
   http_request(current_url, function() {
@@ -46,7 +57,6 @@ var gen_file_url = function() {
     }
   )
 }
-
 
 http_request = function(url, callback) {
     var Http = new XMLHttpRequest();
@@ -60,8 +70,8 @@ http_request = function(url, callback) {
         }
     }
 }
-//webix objects
 
+//webix objects
 var start_picker = {
     view:"datepicker",
     value: d,
@@ -85,9 +95,7 @@ var end_picker   = {
     format:"%d %M %Y at %H:%i",
     width: 275
 }
-var submit = {
-    view: "button", label: "Submit", width: 90, click: gen_file_url
-}
+
 var customer = {
   view:"combo", id:"customer", width:275, label:'Customers',
   options:{
@@ -121,33 +129,44 @@ var uuid = {
   }
 }
 
-var table = {
-    view:"datatable",
-    columns: grid_data,
-    data: customers
-}
-
-var tabview = {
-  borderless: true,
-  view: "tabview",
-  cells: [
-  {
-    header: "empty",
-    body: table
-  },
-  {
-    header: "empty",
-    body: {}
-  }]
+var submit = {
+    view: "button", label: "Submit", width: 90, click: gen_file_url
 }
 
 var uuid_times = {
-    view:"list",
-    id:"uuid_times",
-    template:"#interval_date#",
-    data: "",
-    select:true
-  };
+  view:"list",
+  id:"uuid_times",
+  template:"#interval_date#",
+  data: "",
+  select:true,
+  multiselect:true
+};
+
+var carousel = {
+  view:"carousel",
+  id:"carousel",
+  cols:[
+
+  ],
+  navigation:{
+    type: "side"
+  }
+}
+var table = {
+  view:"datatable",
+  id: "table",
+  columns: grid_data,
+  data: ""
+}
+
+var table_gen = function(data="")  {
+  var table = {
+      view:"datatable",
+      columns: grid_data,
+      data: data
+  }
+  return table
+}
 
 //webix ui
 webix.ui({
@@ -155,9 +174,31 @@ webix.ui({
   rows:[
     { cols: [ start_picker, end_picker, customer, uuid, submit ] },
     { cols:[ { header:"Times", width: 300, body: uuid_times  } , table ]}
-
   ]
 }).show();
+
+function arr_diff (a1, a2) {
+
+  var a = [], diff = [];
+
+  for (var i = 0; i < a1.length; i++) {
+    a[a1[i]] = true;
+  }
+
+  for (var i = 0; i < a2.length; i++) {
+    if (a[a2[i]]) {
+      delete a[a2[i]];
+  } else {
+    a[a2[i]] = true;
+  }
+  }
+
+  for (var k in a) {
+    diff.push(k);
+  }
+
+  return diff;
+}
 
 //events
 $$("customer").attachEvent("onchange", function(new_value, old_value){
@@ -167,12 +208,25 @@ $$("customer").attachEvent("onchange", function(new_value, old_value){
   });
 });
 
-$$("uuid_times").attachEvent("onItemClick", function(id, e, node){;
-   var item = this.getItem(id);
-   http_request(home.concat("/gettable/", item.interval, "/", item.file), function() {
-     //process table object here
-     console.log(data)
-   })
-});
+i = 0
+var cached_tables = [];
 
+//  loading tables from list
+$$("uuid_times").attachEvent("onSelectChange", function(id, e, node){;
+  var item = this.getItem(id);
 
+  $$("table").define("data", [])
+
+  console.log("selected interval " + item.interval_date)
+  console.log("cached tables " + cached_tables)
+  if (item.interval_date in cached_tables) {
+    console.log("loading cached table " + cached_tables[item.interval_date])
+    $$("table").parse(cached_tables[item.interval_date])
+  } else {
+    http_request(home.concat("/gettable/", item.interval, "/", item.id, "/", item.file), function() {
+      console.log("loading UNcached table")
+      $$("table").parse(data)
+      cached_tables[item.interval_date] = data
+    })
+  }
+})
