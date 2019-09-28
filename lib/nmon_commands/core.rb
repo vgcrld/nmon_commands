@@ -26,16 +26,17 @@ module NmonCommands
 
   #for retuning customer list get request
   def self.get_customers
-    Dir.glob("/share/prd01/process/*").map do |o|
+    DB.all_customers.map do |o|
       { name: File.basename(o), id: File.basename(o), title: File.basename(o) }
     end.to_json
   end
 
   #for returning uuid list get request
   def self.get_uuid(customer)
-    Dir.glob("/share/prd01/process/#{customer}/archive/by_uuid/*").map do |o|
+    customers, hosts, types, uuids = DB.get(customer,:type,'aix|linux')
+    uuids.map do |o|
       uuid = File.basename(o)
-      { name: uuid, id: uuid } if uuid.match(/^[[:xdigit:]]{8}-([[:xdigit:]]{4}-){3}[[:xdigit:]]{8}/)
+      { name: uuid, id: uuid }
     end.compact.to_json
   end
 
