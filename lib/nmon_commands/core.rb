@@ -1,4 +1,3 @@
-require 'nmon_commands/version'
 require 'nmon_commands/gpefile'
 require 'awesome_print'
 require 'zlib'

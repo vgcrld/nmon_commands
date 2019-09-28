@@ -1,4 +1,7 @@
 module NmonCommands
+
+   VERSION = "0.1.0"
+
    SETUP      = File.dirname(__FILE__)
    LIB        = File.dirname(SETUP)
    HOME       = File.dirname(LIB)

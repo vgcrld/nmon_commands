@@ -1,5 +1,4 @@
 require 'nmon_commands/setup'
-require 'nmon_commands/version'
 require 'nmon_commands/gpefile'
 require 'nmon_commands/options'
 require 'nmon_commands/core'

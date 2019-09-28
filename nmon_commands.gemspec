@@ -1,7 +1,7 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "nmon_commands/version"
+require "nmon_commands/setup"
 
 Gem::Specification.new do |spec|
   spec.name          = "nmon_commands"
