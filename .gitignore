@@ -10,3 +10,4 @@ ruby/
 *.swp
 /nmon_commands-0.1.0.gem
 /tmp
+/var

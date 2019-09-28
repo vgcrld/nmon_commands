@@ -4,6 +4,8 @@ module NmonCommands
    HOME       = File.dirname(LIB)
    BIN        = File.join(HOME,'bin')
    TMP        = File.join(HOME,'tmp')
+   VAR        = File.join(HOME,'var')
 
-   FileUtils.mkdir(TMP)
+   FileUtils.mkdir_p(TMP)
+   FileUtils.mkdir_p(VAR)
 end
