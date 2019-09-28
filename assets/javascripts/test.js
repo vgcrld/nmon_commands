@@ -52,8 +52,8 @@ var gen_file_url = function() {
     console.log(current_url)
   http_request(current_url, function() {
       console.log(data)
-      $$("uuid_times").clearAll();
-      $$("uuid_times").parse(data);
+      $$("files").clearAll();
+      $$("files").parse(data);
     }
   )
 }
@@ -133,25 +133,24 @@ var submit = {
     view: "button", label: "Submit", width: 90, click: gen_file_url
 }
 
-var uuid_times = {
+var files = {
   view:"list",
-  id:"uuid_times",
+  id:"files",
   template:"#interval_date#",
   data: "",
   select:true,
-  multiselect:true
+  width: 100
 };
 
-var carousel = {
-  view:"carousel",
-  id:"carousel",
-  cols:[
+var intervals = {
+  view:"list",
+  id:"intervals",
+  template:"#interval_date#",
+  data: "",
+  select:true,
+  width: 100
+};
 
-  ],
-  navigation:{
-    type: "side"
-  }
-}
 var table = {
   view:"datatable",
   id: "table",
@@ -173,7 +172,7 @@ webix.ui({
   container: "app",
   rows:[
     { cols: [ start_picker, end_picker, customer, uuid, submit ] },
-    { cols:[ { header:"Times", width: 300, body: uuid_times  } , table ]}
+    { cols:[ { header:"Times", width: 200, body: files }, { header:"Interval", width: 150, body: intervals }, table ]}
   ]
 }).show();
 
@@ -212,13 +211,14 @@ i = 0
 var cached_tables = [];
 
 //  loading tables from list
-$$("uuid_times").attachEvent("onSelectChange", function(id, e, node){;
+
+$$("interval").attachEvent("onSelectChange", function(id, e, node){;
   var item = this.getItem(id);
 
-  $$("table").define("data", [])
+  $$("table").clearAll();
 
   console.log("selected interval " + item.interval_date)
-  console.log("cached tables " + cached_tables)
+  console.log(cached_tables)
   if (item.interval_date in cached_tables) {
     console.log("loading cached table " + cached_tables[item.interval_date])
     $$("table").parse(cached_tables[item.interval_date])

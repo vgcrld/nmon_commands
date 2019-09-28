@@ -1,3 +1,4 @@
+#!/bin/env ruby
 
 require 'awesome_print'
 require 'nmon_commands'

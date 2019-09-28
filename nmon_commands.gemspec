@@ -5,6 +5,7 @@ require "nmon_commands/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "nmon_commands"
+  spec.license       = "MIT"
   spec.version       = NmonCommands::VERSION
   spec.authors       = ["Rich Davis"]
   spec.email         = ["rdavis@galileosuite.com"]
@@ -20,12 +21,12 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "haml"
-  spec.add_dependency "sinatra"
-  spec.add_dependency "sinatra-cross_origin"
-  spec.add_dependency "optimist"
+  spec.add_dependency "haml", "~> 0"
+  spec.add_dependency "sinatra", "~> 0"
+  spec.add_dependency "sinatra-cross_origin", "~> 0"
+  spec.add_dependency "optimist", "~> 0"
 
-  spec.add_development_dependency "bundler"
-  spec.add_development_dependency "rake"
-  spec.add_development_dependency "awesome_print"
+  spec.add_development_dependency "bundler", "~> 0"
+  spec.add_development_dependency "rake", "~> 0"
+  spec.add_development_dependency "awesome_print", "~> 0"
 end
