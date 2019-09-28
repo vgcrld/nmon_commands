@@ -5,90 +5,31 @@ require 'awesome_print'
 require 'optimist'
 require 'csv'
 require 'json'
-require 'nmon_commands/setup'
+require 'nmon_commands'
 
-module NmonCommands
+module NmonCommands; module DB
 
-  @db = YAML.load(File.new(File.join(VAR,"gpe_process.yaml"),'r'))
-
-  # Return *vals that are not in array
-  def self.not_in(array, *vals)
-    vals.select do |val|
-      not array.index(val)
+    opts = Optimist::options do
+      opt :customers, "Customers", type: :strings
+      opt :search,    "Search",    type: :string,  required: true
+      opt :filter,    "Filter",    type: :string,  required: true
     end
-  end
 
-  # Return the values of type in DB (:name, :type, :uuid) for *idx (indexes)
-  def self.customer_value(customer,type,*idx)
-    types = @db[customer]['details'][type.to_sym]
-    idx = (0..types.length-1).to_a if idx.empty?
-    return types.values_at(*idx)
-  end
-
-  # Return all the types found in the DB
-  def self.all_types
-    return @db.values.map{ |o| o['details'][:type] }.flatten.uniq
-  end
-
-  # Return all types for the customer based on searching search with filter
-  def self.get(customer,search,filter)
-    data = @db[customer]['details'][search]
-    idx = data.map.each_with_index{ |o,i| i if o.match(filter)}.compact
-    len = idx.length
-    return [] if idx.empty?
-    return [
-      Array.new(len,customer),
-      customer_value(customer,:name,*idx),
-      customer_value(customer,:type,*idx),
-      customer_value(customer,:uuid,*idx)
-    ]
-  end
-
-  # Return all the customers
-  def self.all_customers
-    return @db.keys
-  end
-
-  # Return a summary of all the types in the DB
-  def self.types
-    @db.values.map{ |o| o['details'][:type] }.flatten.uniq.sort
-  end
-
-  # Convert the results to a CSV
-  def self.to_csv(data)
-    return nil if data.empty?
-    rows = []
-    data.first.each_index do |i|
-      row = []
-      data.length.times do |c|
-        row << data[c][i]
-      end
-      rows << row.to_csv
+    customers = opts[:customers]
+    customers = all_customers if customers.nil?
+    unless (invalid=not_in(all_customers,*customers)).empty?
+      Optimist.die "'#{invalid.join(', ')}' not valid customer(s)."
+      exit 1
     end
-    return rows
-  end
 
-  # Options
-  opts = Optimist::options do
-    opt :customers, "Customers", type: :strings
-    opt :search,    "Search",    type: :string,  required: true
-    opt :filter,    "Filter",    type: :string,  required: true
-  end
+    search=opts[:search].to_sym
+    filter=Regexp.new(opts[:filter])
 
-  customers = opts[:customers]
-  customers = all_customers if customers.nil?
-  unless (invalid=not_in(all_customers,*customers)).empty?
-    Optimist.die "'#{invalid.join(', ')}' not valid customer(s)."
-    exit 1
-  end
+    # Collect
+    customers.each do |customer|
+      val = get(customer,search,filter)
+      puts to_csv(val) unless val.empty?
+    end
 
-  search=opts[:search].to_sym
-  filter=Regexp.new(opts[:filter])
 
-  # Collect
-  customers.each do |customer|
-    val = get(customer,search,filter)
-    puts to_csv(val) unless val.empty?
-  end
-
-end
+end; end
