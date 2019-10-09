@@ -17,7 +17,6 @@ class GpeFile
 
   def get_table(interval)
     rows = grep_file_rows(interval.to_s)
-    ap rows
     return rows
   end
 
@@ -48,6 +47,7 @@ class GpeFile
   def file_intervals
     intervals = get_all_intervals
     rows = grep_file_rows
+    parts = self.filename.split("/")
     rows.map do |o|
       interval = (o.split(",",3)[1])
       {
@@ -55,7 +55,9 @@ class GpeFile
         interval_date: intervals[interval],
         file_date: Time.at(self.date),
         file_epoch: self.date,
-        file: self.filename
+        fullpath: self.filename,
+        filename: parts.last,
+        uuid: parts[7]
       }
     end
   end

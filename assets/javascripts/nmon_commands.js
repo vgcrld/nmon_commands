@@ -1,47 +1,25 @@
-/*
-var tabview =
-  { borderless: true,
-  view: "tabview",
-  cells: [
-  {
-    header: "empty",
-    body: table
-  },
-  {
-    header: "empty",
-    body: {}
-  }]
-}
-grid_data = [
-  { id:"uid",   header:"UID",   width:60},
-  { id:"pid",   header:"PID",   width:60},
-  { id:"ppid",  header:"PPID",  width:60},
-  { id:"c",     header:"C",     width:60},
-  { id:"stime", header:"STIME", width:120},
-  { id:"tty",   header:"TTY",   width:60},
-  { id:"time",  header:"TIME" , width:60},
-  { id:"cmd",   header:"CMD",   width:500},
-]
-*/
+
 var grid_data = [
   { id:"name",  header:"Interval", width:100},
   { id:"file_path",  header:"Location", width:500}
 ]
-//variables
+
+//Variables
 var home = "http://karl.galileosuite.com:10999";
 var d = new Date();
 d.setHours(d.getHours() - 1)
 var str_date = webix.Date.strToDate("%Y-%m-%d %H:%i");
 
 //functions
-test =  "2019-09-08T02:00:01+00:00"
+
 var myformat = webix.Date.dateToStr("%Y-%m-%dT%H:%i:%s");
-console.log(myformat(test))
+
 var epoc_to_date = function(secs) {
   secs = secs * 1000;
   d = new Date(secs);
   return d
 }
+
 var gen_file_url = function() {
   var customer = $$("customer").getText();
   var uuid_choice = $$("uuid").getText();
