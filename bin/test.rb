@@ -24,7 +24,9 @@ db = NmonCommands::DB
 
 # Search (like get) but return the GpeFiles. reseut is uuid => [ gpefile1, gpefile2, ... ]
 # ap db.get_files_for_customer_with_search('PSU',:type,'linux')
-ap db.get_files_for_customer_with_search('PSU',:name,'tr21n11a')
+
+# How to limit by time
+# ap db.get_files_for_customer_with_search('PSU',:name,'tr2[16]').values.flatten.select{ |o| o >= Time.now.to_i-7200 }
 
 exit
 
