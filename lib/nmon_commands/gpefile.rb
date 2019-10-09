@@ -20,24 +20,6 @@ class GpeFile
     return rows
   end
 
-  #currently not in use
-  def get_data(start_ts)
-    ret = {}
-    rows = grep_file_rows
-    rows.each_with_index do |sample,i|
-      lines = sample.lines('\n')
-      t, samp, head = lines.shift.split(",",3)
-      ret[:title] = DateTime.strptime(date.to_s, "%s")
-      ret[:header] = head.chomp('\n').split(" ",13)
-      ret[samp] = lines.map do |o|
-        line = o.chomp!('\n')
-        next if line.nil?
-        [ line.split(" ",13) ].flatten
-      end.compact
-    end
-    return ret
-  end
-
   # Implement for comparable
   def <=>(cdate)
     @date <=> cdate
@@ -79,6 +61,21 @@ class GpeFile
     file = File.new(self.filename)
     gz = Zlib::GzipReader.new(file)
     return gz.read.lines.select{ |o| o.match(Regexp.new(search)) }
+  end
+
+  def ps_data_by_T_time
+    data = self.grep_file_rows
+    ret = {}
+    data.each do |timeslice|
+      data = timeslice.split('\n')
+      trash, ts, headers  = data.shift.split(',')
+      ret[ts] = []
+      ret[ts] << headers.split.join(',')
+      data.each do |psdata|
+        ret[ts] << psdata.split(" ",13)
+      end
+    end
+    return ret.to_json
   end
 
   private

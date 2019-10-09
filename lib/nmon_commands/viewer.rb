@@ -61,18 +61,14 @@ module NmonCommands
     end
 
     # Return the table ps data from the file
-    get "/gettable/:interval/:id/*" do
-      interval = params[:interval]
-      id = params[:id]
-      file_path = params[:splat][0]
-      #working just returing a single table
-      #the grep_file_rows File.open method is not finding the file even though its there
-      #table = GpeFile.new(file_path)
-      #rows = table.get_table(interval)
-      #return for testing
-      {name: interval, file_path: file_path, id: id}.to_json
+    get "/gettable/:customer/:uuid/:filename/:interval" do
+      NmonCommands.get_table(
+        params[:customer],
+        params[:uuid],
+        params[:interval],
+        params[:filename]
+      )
     end
-
 
     # Test page
     get '/doc' do
