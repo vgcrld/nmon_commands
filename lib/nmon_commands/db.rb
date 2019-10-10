@@ -9,14 +9,6 @@ module NmonCommands; module DB
 
   DB = YAML.load(File.new(File.join(VAR,"gpe_process.yaml"),'r'))
 
-  # Given the customer and uuid return the current files in the archive dir
-  def self.current_files_for_customer_uuid(customer,uuid,search='*.{linux,aix}.gz')
-    data = DB[customer]
-    path = data['path']
-    list = Dir.glob(File.join(path,uuid,search)).sort.map{ |o| GpeFile.new(o) }
-    return list
-  end
-
   def self.get_files_for_customer_with_search(customer,search,filter,limit='*.{linux,aix}.gz')
     ret = {}
     path = DB[customer]["path"]
@@ -69,15 +61,12 @@ module NmonCommands; module DB
   # Convert the results to a CSV
   def self.to_csv(data)
     return nil if data.empty?
-    rows = []
-    data.first.each_index do |i|
-      row = []
-      data.length.times do |c|
-        row << data[c][i]
-      end
-      rows << row.to_csv
-    end
-    return rows
+    header = %w(customer name type uuid)
+    start = data.shift
+    zipped = start.zip(*data)
+    rows = zipped.map{ |o| CSV::Row.new( header, o ) }
+    table = CSV::Table.new(rows)
+    return table
   end
 
 end; end

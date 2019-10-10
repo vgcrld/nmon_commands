@@ -6,10 +6,6 @@ require 'nmon_commands'
 
 db = NmonCommands::DB
 
-# Return all file names for PSU with UUID - select limit by time
-# files = db.current_files_for_customer_uuid('PSU','FeCB7A1F-CBAc-4E91-9783-1C2cb41EB7cA')
-# ap files.select{ |o| o >= (Time.now.to_i - 7200) }
-
 # Return all the customers
 # ap db.all_customers
 
@@ -27,6 +23,16 @@ db = NmonCommands::DB
 
 # How to limit by time
 # ap db.get_files_for_customer_with_search('PSU',:name,'tr2[16]').values.flatten.select{ |o| o >= Time.now.to_i-7200 }
+#
+
+# How to zip up
+header = %w(customer name type uuid)
+data = NmonCommands::DB.get('atsgroup',:type,/aix/i)
+start = data.shift
+rows = start.zip(*data).map{ |o| CSV::Row.new(header,o) }
+table = CSV::Table.new(rows)
+
+
 
 exit
 
