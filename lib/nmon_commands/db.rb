@@ -59,6 +59,8 @@ module NmonCommands; module DB
   end
 
   # Convert the results to a CSV
+  # data is a an array of equally sized arrays
+  # Return is a CSV::Table
   def self.to_csv(data)
     return nil if data.empty?
     header = %w(customer name type uuid)
