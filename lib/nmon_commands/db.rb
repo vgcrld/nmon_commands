@@ -39,6 +39,13 @@ module NmonCommands; module DB
     return DB.keys
   end
 
+  # Return all the uuids for a customer
+  def self.get_detail_hash_customer(customer, type: :type, limit: /linux|aix/)
+    table = self.get(customer,type,limit)
+    csv = self.to_csv(table)
+    return csv.map{ |o| o }
+  end
+
   # Return all the types found in the DB
   def self.all_types
     return DB.values.map{ |o| o['details'][:type] }.flatten.uniq.sort
