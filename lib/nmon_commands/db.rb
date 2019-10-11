@@ -11,10 +11,10 @@ module NmonCommands; module DB
 
   # @param [String] customer - exact name of custmer
   # @param [Symbol] type - set search column: :name, :uuid, or :type (default :type)
-  # @param [Regexp] filter- filter search for  (default is /linux|aix/)
-  # @param [String] limit - glob filter spec (default is "*.{linux,aix}")
+  # @param [Regexp] filter- filter search for Regexp
+  # @param [String] limit - glob filter spec (default is "*.gz")
   # Return [Hash] uuid => [Array] [GpeFile]
-  def self.get_files_for_customer_with_search(customer,search=:type,filter=/aix|linux/,limit='*.gz')
+  def self.get_files_for_customer_with_search(customer,filter,search=:uuid,limit='*{aix,linux}.gz')
     ret = {}
     path = DB[customer]["path"]
     data = get(customer,search,filter)
@@ -54,7 +54,7 @@ module NmonCommands; module DB
   def self.get_detail_hash_for_customer(customer, type: :type, limit: /linux|aix/)
     table = self.get(customer,type,limit)
     csv = self.to_csv(table)
-    return csv.map{ |o| o }
+    return csv.map{ |o| o.to_h }
   end
 
   # Return an [Array] of all the types found in the DB

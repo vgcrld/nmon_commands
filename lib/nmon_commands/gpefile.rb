@@ -75,7 +75,7 @@ class GpeFile
         ret[ts] << psdata.split(" ",13)
       end
     end
-    return ret.to_json
+    return ret
   end
 
   private
