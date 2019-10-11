@@ -3,7 +3,7 @@
 require 'nmon_commands'
 require 'ostruct'
 
-HOME = File.dirname(File.dirname(__FILE__))
+HOME = NmonCommands::HOME
 
 config = OpenStruct.new(
     home: HOME,

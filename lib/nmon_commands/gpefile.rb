@@ -17,26 +17,7 @@ class GpeFile
 
   def get_table(interval)
     rows = grep_file_rows(interval.to_s)
-    ap rows
     return rows
-  end
-
-  #currently not in use
-  def get_data(start_ts)
-    ret = {}
-    rows = grep_file_rows
-    rows.each_with_index do |sample,i|
-      lines = sample.lines('\n')
-      t, samp, head = lines.shift.split(",",3)
-      ret[:title] = DateTime.strptime(date.to_s, "%s")
-      ret[:header] = head.chomp('\n').split(" ",13)
-      ret[samp] = lines.map do |o|
-        line = o.chomp!('\n')
-        next if line.nil?
-        [ line.split(" ",13) ].flatten
-      end.compact
-    end
-    return ret
   end
 
   # Implement for comparable
@@ -48,6 +29,7 @@ class GpeFile
   def file_intervals
     intervals = get_all_intervals
     rows = grep_file_rows
+    parts = self.filename.split("/")
     rows.map do |o|
       interval = (o.split(",",3)[1])
       {
@@ -55,7 +37,9 @@ class GpeFile
         interval_date: intervals[interval],
         file_date: Time.at(self.date),
         file_epoch: self.date,
-        file: self.filename
+        fullpath: self.filename,
+        filename: parts.last,
+        uuid: parts[7]
       }
     end
   end
@@ -77,6 +61,21 @@ class GpeFile
     file = File.new(self.filename)
     gz = Zlib::GzipReader.new(file)
     return gz.read.lines.select{ |o| o.match(Regexp.new(search)) }
+  end
+
+  def ps_data_by_T_time
+    data = self.grep_file_rows
+    ret = {}
+    data.each do |timeslice|
+      data = timeslice.split('\n')
+      trash, ts, headers  = data.shift.split(',')
+      ret[ts] = []
+      ret[ts] << headers.split.join(',')
+      data.each do |psdata|
+        ret[ts] << psdata.split(" ",13)
+      end
+    end
+    return ret
   end
 
   private

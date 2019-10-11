@@ -1,0 +1,35 @@
+#!/bin/env ruby
+
+require 'yaml'
+require 'awesome_print'
+require 'optimist'
+require 'csv'
+require 'json'
+require 'nmon_commands'
+
+module NmonCommands; module DB
+
+    opts = Optimist::options do
+      opt :customers, "Customers", type: :strings
+      opt :search,    "Search",    type: :string,  required: true
+      opt :filter,    "Filter",    type: :string,  required: true
+    end
+
+    customers = opts[:customers]
+    customers = all_customers if customers.nil?
+    unless (invalid=not_in(all_customers,*customers)).empty?
+      Optimist.die "'#{invalid.join(', ')}' not valid customer(s)."
+      exit 1
+    end
+
+    search=opts[:search].to_sym
+    filter=Regexp.new(opts[:filter])
+
+    # Collect
+    customers.each do |customer|
+      val = get(customer,search,filter)
+      puts to_csv(val) unless val.empty?
+    end
+
+
+end; end

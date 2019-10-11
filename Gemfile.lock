@@ -2,10 +2,10 @@ PATH
   remote: .
   specs:
     nmon_commands (0.1.0)
-      haml
-      optimist
-      sinatra
-      sinatra-cross_origin
+      haml (~> 5.1)
+      optimist (~> 3)
+      sinatra (~> 2.0)
+      sinatra-cross_origin (~> 0.4)
 
 GEM
   remote: https://rubygems.org/
@@ -26,17 +26,17 @@ GEM
       rack-protection (= 2.0.7)
       tilt (~> 2.0)
     sinatra-cross_origin (0.4.0)
-    temple (0.8.1)
-    tilt (2.0.9)
+    temple (0.8.2)
+    tilt (2.0.10)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  awesome_print
-  bundler
+  awesome_print (~> 1.8)
+  bundler (~> 1.17)
   nmon_commands!
-  rake
+  rake (~> 12.3)
 
 BUNDLED WITH
    1.17.1

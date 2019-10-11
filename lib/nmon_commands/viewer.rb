@@ -3,13 +3,13 @@ require 'sinatra/cross_origin'
 require 'awesome_print'
 require 'json'
 require 'haml'
-require "date"
-require "uri"
+require 'date'
+require 'uri'
+require 'nmon_commands/db'
 
 module NmonCommands
 
   class Viewer < Sinatra::Base
-
 
     def self.start(config)
 
@@ -31,55 +31,46 @@ module NmonCommands
       run!
     end
 
-    # Pages
     get '/view' do
       haml :view
     end
 
-    # endpoints - return uuids for a customer
-    get "/uuid/:customer" do
-      customer = params[:customer]
-      uuids = NmonCommands.get_uuid(customer)
-      session[customer] = { uuids: uuids }
-      uuids
+    # Get all customers
+    get "/api/v1/customer" do
+      customers = NmonCommands::DB.all_customers
+      customers.to_json
     end
 
-    # Return files for a custoerm:uuid:start:end
-    get "/getfile/:customer/:uuid/:start_ts/:end_ts" do
-      start_time = params[:start_ts].to_i/1000
-      end_time = params[:end_ts].to_i/1000
-      NmonCommands.get_file_list(params[:customer], params[:uuid], start_time, end_time)
+    # Get a customer Details
+    get "/api/v1/customer/:customer/details" do
+      details = NmonCommands::DB.get_detail_hash_for_customer(params[:customer])
+      details.to_json
     end
 
-    # Return the time intervals
-    get "/getdates/:customer/:uuid/:start_ts/:end_ts" do
-      start_time = params[:start_ts].to_i/1000
-      end_time = params[:end_ts].to_i/1000
-      files = NmonCommands.get_file_list(params[:customer], params[:uuid], start_time, end_time)
-      times = NmonCommands.get_intervals(files)
-      times.to_json
+
+    # Return files for a customer:uuid:start:end
+    get "/api/v1/customer/:customer/files/:uuid" do
+      if params[:start_time].nil?
+        start_time = (Time.now.to_i - 7200)
+      else
+        start_time = params[:start_time].to_i
+      end
+      if params[:end_time].nil?
+        end_time = Time.now.to_i
+      else
+        end_time = params[:end_time].to_i
+      end
+      files = NmonCommands::DB.get_files_for_customer_with_search(params[:customer], params[:uuid])
+      filtered = files.values.flatten.select{ |o| o >= start_time and o <= end_time }
+      filtered.to_json
     end
 
     # Return the table ps data from the file
-    get "/gettable/:interval/:id/*" do
-      interval = params[:interval]
-      id = params[:id]
-      file_path = params[:splat][0]
-      #working just returing a single table
-      #the grep_file_rows File.open method is not finding the file even though its there
-      #table = GpeFile.new(file_path)
-      #rows = table.get_table(interval)
-      #return for testing
-      {name: interval, file_path: file_path, id: id}.to_json
+    get "/api/v1/customer/:customer/psdata" do
+      file = GpeFile.new(params[:filename])
+      file.ps_data_by_T_time.to_json
     end
 
-
-    # Test page
-    get '/doc' do
-      haml :doc
-    end
-
-    # Set Sinatra options to allow CORRS
     options "*" do
       response.headers["Allow"] = "GET, PUT, POST, DELETE, OPTIONS"
       response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, Accept, X-User-Email, X-Auth-Token"

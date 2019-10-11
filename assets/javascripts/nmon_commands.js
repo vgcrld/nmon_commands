@@ -1,47 +1,25 @@
-/*
-var tabview =
-  { borderless: true,
-  view: "tabview",
-  cells: [
-  {
-    header: "empty",
-    body: table
-  },
-  {
-    header: "empty",
-    body: {}
-  }]
-}
-grid_data = [
-  { id:"uid",   header:"UID",   width:60},
-  { id:"pid",   header:"PID",   width:60},
-  { id:"ppid",  header:"PPID",  width:60},
-  { id:"c",     header:"C",     width:60},
-  { id:"stime", header:"STIME", width:120},
-  { id:"tty",   header:"TTY",   width:60},
-  { id:"time",  header:"TIME" , width:60},
-  { id:"cmd",   header:"CMD",   width:500},
-]
-*/
+
 var grid_data = [
   { id:"name",  header:"Interval", width:100},
   { id:"file_path",  header:"Location", width:500}
 ]
-//variables
+
+//Variables
 var home = "http://karl.galileosuite.com:10999";
 var d = new Date();
 d.setHours(d.getHours() - 1)
 var str_date = webix.Date.strToDate("%Y-%m-%d %H:%i");
 
 //functions
-test =  "2019-09-08T02:00:01+00:00"
+
 var myformat = webix.Date.dateToStr("%Y-%m-%dT%H:%i:%s");
-console.log(myformat(test))
+
 var epoc_to_date = function(secs) {
   secs = secs * 1000;
   d = new Date(secs);
   return d
 }
+
 var gen_file_url = function() {
   var customer = $$("customer").getText();
   var uuid_choice = $$("uuid").getText();
@@ -52,8 +30,8 @@ var gen_file_url = function() {
     console.log(current_url)
   http_request(current_url, function() {
       console.log(data)
-      $$("uuid_times").clearAll();
-      $$("uuid_times").parse(data);
+      $$("files").clearAll();
+      $$("files").parse(data);
     }
   )
 }
@@ -133,25 +111,24 @@ var submit = {
     view: "button", label: "Submit", width: 90, click: gen_file_url
 }
 
-var uuid_times = {
+var files = {
   view:"list",
-  id:"uuid_times",
+  id:"files",
   template:"#interval_date#",
   data: "",
   select:true,
-  multiselect:true
+  width: 100
 };
 
-var carousel = {
-  view:"carousel",
-  id:"carousel",
-  cols:[
+var intervals = {
+  view:"list",
+  id:"intervals",
+  template:"#interval_date#",
+  data: "",
+  select:true,
+  width: 100
+};
 
-  ],
-  navigation:{
-    type: "side"
-  }
-}
 var table = {
   view:"datatable",
   id: "table",
@@ -173,7 +150,7 @@ webix.ui({
   container: "app",
   rows:[
     { cols: [ start_picker, end_picker, customer, uuid, submit ] },
-    { cols:[ { header:"Times", width: 300, body: uuid_times  } , table ]}
+    { cols:[ { header:"Times", width: 200, body: files }, { header:"Interval", width: 150, body: intervals }, table ]}
   ]
 }).show();
 
@@ -212,13 +189,14 @@ i = 0
 var cached_tables = [];
 
 //  loading tables from list
-$$("uuid_times").attachEvent("onSelectChange", function(id, e, node){;
+
+$$("interval").attachEvent("onSelectChange", function(id, e, node){;
   var item = this.getItem(id);
 
-  $$("table").define("data", [])
+  $$("table").clearAll();
 
   console.log("selected interval " + item.interval_date)
-  console.log("cached tables " + cached_tables)
+  console.log(cached_tables)
   if (item.interval_date in cached_tables) {
     console.log("loading cached table " + cached_tables[item.interval_date])
     $$("table").parse(cached_tables[item.interval_date])

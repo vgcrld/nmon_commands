@@ -27,17 +27,7 @@ Start the app by
 bundle exec nmonview 
 ```
 
-And starting: 
-
-```
-http://hostname:10888/view/:customer/:uuid
-```
-
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-# API Endpoints
+## API Endpoints
 
 Get a list of all customers:
 http://karl:10999/api/v1/customer
