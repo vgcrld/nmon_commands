@@ -36,3 +36,18 @@ http://hostname:10888/view/:customer/:uuid
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+
+# API Endpoints
+
+Get a list of all customers:
+http://karl:10999/api/v1/customer
+
+Get a customer details:
+http://karl:10999/api/v1/customer/atsgroup/details
+
+List the files for the UUID:
+http://karl:10999/api/v1/customer/PSU/files/D8Aa74DA-CEE7-40dA-9B4B-C89ED25fb851
+
+List the PS data for a specific filename:
+http://karl:10999/api/v1/customer/atsgroup/psdata?filename=/share/prd01/process/atsgroup/archive/by_uuid/7713fA55-fB19-40aa-951a-ECd4bC8eFAd8/g01plinf03.20191011.130001.GMT__640815__.7713fA55-fB19-40aa-951a-ECd4bC8eFAd8.linux.gz
+
