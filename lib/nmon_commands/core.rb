@@ -27,7 +27,7 @@ module NmonCommands
   #for retuning customer list get request
   def self.get_customers
     DB.all_customers.map do |o|
-      { name: File.basename(o), id: File.basename(o), title: File.basename(o) }
+      { name: File.basename(o), uuid: File.basename(o), title: File.basename(o) }
     end.to_json
   end
 
@@ -36,7 +36,7 @@ module NmonCommands
     customers, hosts, types, uuids = DB.get(customer,:type,'aix|linux')
     uuids.map do |o|
       uuid = File.basename(o)
-      { name: uuid, id: uuid }
+      { name: uuid, uuid: uuid }
     end.compact.to_json
   end
 

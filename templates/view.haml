@@ -2,11 +2,12 @@
 %link{ rel: "stylesheet",  href: "http://cdn.webix.com/edge/webix.css", type: "text/css"}
 %script{ src: "http://cdn.webix.com/edge/webix.js", type: "text/javascript" }
 
-%h1 View File Data
+.app
 
 #app
 
 %script
-  != "customers = #{NmonCommands.get_customers}"
+
+  /!= "customers = #{NmonCommands.get_customers}"
 
 %script{ src: "/javascripts/nmon_commands.js", type: "text/javascript" }

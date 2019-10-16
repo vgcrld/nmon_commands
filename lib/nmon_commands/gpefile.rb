@@ -78,6 +78,24 @@ class GpeFile
     return ret
   end
 
+  def ps_data
+    data = self.grep_file_rows
+    ret = []
+    data.each do |timeslice|
+      data = timeslice.split('\n')
+      trash, ts, headers  = data.shift.split(',')
+      data[0..-2].each do |psdata|
+        row = psdata.split(" ",13)
+        row_hash = {}
+        headers.split.each_with_index do |o,i|
+          row_hash[o] = row[i]
+        end
+        ret << row_hash
+      end
+    end
+    return ret
+  end
+
   private
 
 
