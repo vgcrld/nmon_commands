@@ -7,32 +7,35 @@ var home = "http://karl.galileosuite.com:10999/api/v1/customer";
 var customer = "";
 
 var cols = [
-  { id:"USER"    ,  header:"User"    ,sort:"string"},
-  { id:"PID"     ,  header:"PID"     ,sort:"int"},
-  { id:"PPID"    ,  header:"PPID"    ,sort:"int"},
-  { id:"NLWP"    ,  header:"NLWP"    ,sort:"int"},
-  { id:"TIME"    ,  header:"TIME"    ,sort:"string"},
-  { id:"ELAPSED" ,  header:"Elapsed" ,sort:"string"},
-  { id:"%CPU"    ,  header:"%CPU"    ,sort:"int"},
-  { id:"%MEM"    ,  header:"%MEM"    ,sort:"int"},
-  { id:"RSS"     ,  header:"RSS"     ,sort:"int"},
-  { id:"VSZ"     ,  header:"VSZ"     ,sort:"int"},
-  { id:"PAGEIN"  ,  header:"PAGEIN"  ,sort:"int"},
-  { id:"COMMAND" ,  header:"Command" ,sort:"string"},
-  { id:"ARGS"    ,  header:"ARGS"    ,sort:"string"}
+  { id:"time"    ,  header:["Time"   ,{ content:"selectFilter"}] , sort:"string",  width:90 },
+  { id:"USER"    ,  header:["User"   ,{ content:"selectFilter"}] , sort:"string",  width:120, },
+  { id:"PID"     ,  header:["PID"    ,{ content:"selectFilter"}] , sort:"int"   ,  width:80, },
+  { id:"PPID"    ,  header:["PPID"   ,{ content:"selectFilter"}] , sort:"int"   ,  width:80, },
+  { id:"NLWP"    ,  header:["NLWP"   ,{ content:"selectFilter"}] , sort:"int"   ,  width:80, },
+  { id:"TIME"    ,  header:["TIME"   ,{ content:"selectFilter"}] , sort:"string",  width:100, },
+  { id:"ELAPSED" ,  header:["Elapsed",{ content:"selectFilter"}] , sort:"string",  width:120, },
+  { id:"%CPU"    ,  header:["%CPU"   ,{ content:"selectFilter"}] , sort:"int"   ,  width:100, },
+  { id:"%MEM"    ,  header:["%MEM"   ,{ content:"selectFilter"}] , sort:"int"   ,  width:80, },
+  { id:"RSS"     ,  header:["RSS"    ,{ content:"selectFilter"}] , sort:"int"   ,  width:100, },
+  { id:"VSZ"     ,  header:["VSZ"    ,{ content:"selectFilter"}] , sort:"int"   ,  width:100, },
+  { id:"PAGEIN"  ,  header:["PAGEIN" ,{ content:"selectFilter"}] , sort:"int"   ,  width:100, },
+  { id:"COMMAND" ,  header:["Command",{ content:"selectFilter"}] , sort:"string",  width:200, },
+  { id:"ARGS"    ,  header:"ARGS"                                , sort:"string",  width:1500, }
 ]
-
 var d = new Date();
 
 d.setHours(d.getHours() - 1)
 
 var str_date = webix.Date.strToDate("%Y-%m-%d %H:%i");
 
+var date_str = webix.Date.dateToStr("%Y-%m-%d %H:%i");
+
 var file_to_date = webix.Date.strToDate("%Y-%m-%d-%H-%i-%s");
 
 var myformat = webix.Date.dateToStr("%Y-%m-%d at %H:%i");
 
 var file_date = new RegExp(/\.(\d{4})(\d{2})(\d{2})\.(\d{2})(\d{2})(\d{2})\.([A-Z]{3})/);
+
 //functions
 
 //convert epoc to date
@@ -89,7 +92,7 @@ var customer = {
 }
 
 var uuid = {
-  view:"combo", id:"uuid", width:275, label:'UUIDs', value:1,
+  view:"combo", id:"uuid", width:255, label:"Name", value:1, labelWidth:50,
   options:{
     filter:function(item, value){
       if(item.name.toString().toLowerCase().indexOf(value.toLowerCase())===0)
@@ -101,28 +104,37 @@ var uuid = {
 }
 
 var submit = {
-    view: "button", label: "Submit", width: 90, click: gen_file_url
+    view: "button", label: "Submit", width: 100, click: gen_file_url
 }
 
 var files = {
-  view:"list", id:"files", template:"#name#",
-  data: "", select:true, height: 100
+  multi:true, view:"accordion",
+  cols:[
+    { header:"Files", width: 200,
+    body:{
+      view:"list", id:"files", template:"#name#",
+      data: "", select:true, rowHeight:10
+    }
+  }]
 };
 
 var table = {
   view:"datatable",
   id: "table",
   columns: cols,
-  data: ""
+  data: "",
+  rowHeight:30,
+  headerHeight: 100
 }
 
+var space = {width:50}
 //webix ui
 webix.ui({
   container: "app",
   rows:[
-    { cols: [ start_picker, end_picker, customer, uuid, submit, {}] },
-    { cols:[ files ]},
-    { cols:[ table ]}
+    { cols: [ start_picker, {width:50}, end_picker, {width:50}, customer,{width:50}, uuid, {width:50}, submit,{}] },
+    {height: 10},
+    { cols:[ files, table]}
   ]
 }).show();
 
@@ -136,7 +148,8 @@ http_request(home, function() {
 
 //getting data for UUID and names
 $$("customer").attachEvent("onchange", function(new_value, old_value){
-  http_request(home.concat("/", new_value, "/details"), function() {
+  let url = home + "/" + new_value + "/details";
+  http_request(url, function() {
     $$("uuid").getPopup().getList().clearAll();
     data = change_key(data, "uuid", "id")
     $$("uuid").getPopup().getList().parse(data)
@@ -147,11 +160,11 @@ $$("customer").attachEvent("onchange", function(new_value, old_value){
 function gen_file_url() {
   customer = $$("customer").getText();
   var uuid_choice = $$("uuid").getValue();
-  var start_time = str_date($$("start").getValue()).getTime();
-  var end_time = str_date($$("end").getValue()).getTime();
-
-  current_url = home.concat("/", customer, "/files/", uuid_choice)
+  var start_time = str_date($$("start").getValue()).getTime()/1000;
+  var end_time = str_date($$("end").getValue()).getTime()/1000;
+  current_url = home.concat("/", customer, "/files/", uuid_choice, "?start_time=", start_time, "?end_time=", end_time)
   console.log(current_url)
+
   http_request(current_url, function() {
     //parsing data to pass to list with proper date name and file
     var files = [];
