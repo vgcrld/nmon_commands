@@ -1,4 +1,5 @@
 require 'json'
+require "date"
 
 class GpeFile
 
@@ -73,6 +74,26 @@ class GpeFile
       ret[ts] << headers.split.join(',')
       data.each do |psdata|
         ret[ts] << psdata.split(" ",13)
+      end
+    end
+    return ret
+  end
+
+  def ps_data
+    intervals = get_all_intervals
+    data = self.grep_file_rows
+    ret = []
+    data.each_with_index do |timeslice, i|
+      data = timeslice.split('\n')
+      trash, ts, headers  = data.shift.split(',')
+      data[0..-2].each do |psdata|
+        row = psdata.split(" ",13)
+        row_hash = {}
+        row_hash["time"] = intervals[ts].split[1]
+        headers.split.each_with_index do |o,i|
+          row_hash[o] = row[i]
+        end
+        ret << row_hash
       end
     end
     return ret

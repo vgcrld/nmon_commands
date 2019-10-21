@@ -68,7 +68,8 @@ module NmonCommands
     # Return the table ps data from the file
     get "/api/v1/customer/:customer/psdata" do
       file = GpeFile.new(params[:filename])
-      file.ps_data_by_T_time.to_json
+      ret = file.ps_data
+      ret.to_json
     end
 
     options "*" do
