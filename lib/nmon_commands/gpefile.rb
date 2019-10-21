@@ -54,7 +54,6 @@ class GpeFile
       keys = o.split(",")
       ret[keys[1]] = "#{keys[3]} #{keys[2]}"
     end
-    ap ret
     return ret
   end
 
