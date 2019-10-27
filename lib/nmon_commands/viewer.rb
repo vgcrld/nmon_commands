@@ -52,11 +52,13 @@ module NmonCommands
     get "/api/v1/customer/:customer/files/:uuid" do
       if params[:start_time].nil?
         start_time = (Time.now.to_i - 7200)
+        ap "nil start"
       else
         start_time = params[:start_time].to_i
       end
       if params[:end_time].nil?
         end_time = Time.now.to_i
+        ap "nil end"
       else
         end_time = params[:end_time].to_i
       end

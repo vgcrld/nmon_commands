@@ -2,39 +2,52 @@
 //probs not needed
 
 //Variables
-var home = "http://karl.galileosuite.com:10999/api/v1/customer";
+const home = "http://karl.galileosuite.com:10999/api/v1/customer";
 
-var customer = "";
+const cols = [
+  { id:"time"    ,  header:["Interval"] , sort:"string",  width:90 },
+  { id:"USER"    ,  header:["User"    ] , sort:"string",  width:120, },
+  { id:"PID"     ,  header:["PID"     ] , sort:"int"   ,  width:80, },
+  { id:"PPID"    ,  header:["PPID"    ] , sort:"int"   ,  width:80, },
+  { id:"NLWP"    ,  header:["NLWP"    ] , sort:"int"   ,  width:80, },
+  { id:"TIME"    ,  header:["TIME"    ] , sort:"string",  width:100, },
+  { id:"ELAPSED" ,  header:["Elapsed" ] , sort:"string",  width:120, },
+  { id:"%CPU"    ,  header:["%CPU"    ] , sort:"int"   ,  width:100, },
+  { id:"%MEM"    ,  header:["%MEM"    ] , sort:"int"   ,  width:80, },
+  { id:"RSS"     ,  header:["RSS"     ] , sort:"int"   ,  width:100, },
+  { id:"VSZ"     ,  header:["VSZ"     ] , sort:"int"   ,  width:100, },
+  { id:"PAGEIN"  ,  header:["PAGEIN"  ] , sort:"int"   ,  width:100, },
+  { id:"COMMAND" ,  header:["Command" ] , sort:"string",  width:200, },
+  { id:"ARGS"    ,  header:"ARGS"       , sort:"string",  width:1500, }
+];
 
-var cols = [
-  { id:"time"    ,  header:["Time"   ,{ content:"selectFilter"}] , sort:"string",  width:90 },
-  { id:"USER"    ,  header:["User"   ,{ content:"selectFilter"}] , sort:"string",  width:120, },
-  { id:"PID"     ,  header:["PID"    ,{ content:"selectFilter"}] , sort:"int"   ,  width:80, },
-  { id:"PPID"    ,  header:["PPID"   ,{ content:"selectFilter"}] , sort:"int"   ,  width:80, },
-  { id:"NLWP"    ,  header:["NLWP"   ,{ content:"selectFilter"}] , sort:"int"   ,  width:80, },
-  { id:"TIME"    ,  header:["TIME"   ,{ content:"selectFilter"}] , sort:"string",  width:100, },
-  { id:"ELAPSED" ,  header:["Elapsed",{ content:"selectFilter"}] , sort:"string",  width:120, },
-  { id:"%CPU"    ,  header:["%CPU"   ,{ content:"selectFilter"}] , sort:"int"   ,  width:100, },
-  { id:"%MEM"    ,  header:["%MEM"   ,{ content:"selectFilter"}] , sort:"int"   ,  width:80, },
-  { id:"RSS"     ,  header:["RSS"    ,{ content:"selectFilter"}] , sort:"int"   ,  width:100, },
-  { id:"VSZ"     ,  header:["VSZ"    ,{ content:"selectFilter"}] , sort:"int"   ,  width:100, },
-  { id:"PAGEIN"  ,  header:["PAGEIN" ,{ content:"selectFilter"}] , sort:"int"   ,  width:100, },
-  { id:"COMMAND" ,  header:["Command",{ content:"selectFilter"}] , sort:"string",  width:200, },
-  { id:"ARGS"    ,  header:"ARGS"                                , sort:"string",  width:1500, }
-]
+const default_struc = {
+  "rows":["USER","PID"],
+  "columns":[],
+  "values":[
+    {"name":"TIME","text":"TIME","id":1572125101547,"operation":["count"]},
+    {"name":"%CPU","text":"%CPU","id":1572125101549,"operation":["avr"]},
+    {"name":"%MEM","text":"%MEM","id":1572125101550,"operation":["avr"]},
+    {"name":"VSZ","text":"VSZ","id":1572125101552,"operation":["avr"]},
+    {"name":"PAGEIN","text":"PAGEIN","id":1572125101553,"operation":["avr"]},
+    {"name":"ELAPSED","text":"ELAPSED","id":1572125101548,"operation":["avr"]}
+  ],
+};
+
+const structures = [{name:"Default", id:1, structure:default_struc}]
+
 var d = new Date();
-
 d.setHours(d.getHours() - 1)
 
-var str_date = webix.Date.strToDate("%Y-%m-%d %H:%i");
+const str_date = webix.Date.strToDate("%Y-%m-%d %H:%i");
 
-var date_str = webix.Date.dateToStr("%Y-%m-%d %H:%i");
+const date_str = webix.Date.dateToStr("%Y-%m-%d %H:%i");
 
-var file_to_date = webix.Date.strToDate("%Y-%m-%d-%H-%i-%s");
+const file_to_date = webix.Date.strToDate("%Y-%m-%d-%H-%i-%s");
 
-var myformat = webix.Date.dateToStr("%Y-%m-%d at %H:%i");
+const myformat = webix.Date.dateToStr("%Y-%m-%d at %H:%i");
 
-var file_date = new RegExp(/\.(\d{4})(\d{2})(\d{2})\.(\d{2})(\d{2})(\d{2})\.([A-Z]{3})/);
+const file_date = new RegExp(/\.(\d{4})(\d{2})(\d{2})\.(\d{2})(\d{2})(\d{2})\.([A-Z]{3})/);
 
 //functions
 
@@ -45,7 +58,7 @@ var epoc_to_date = function(secs) {
   return d
 }
 
-//get http request
+// http request
 function http_request(url, callback) {
     var Http = new XMLHttpRequest();
     Http.open("GET", url, true);
@@ -62,24 +75,29 @@ function http_request(url, callback) {
 function change_key(arr, from, to) {
   //takes an array of objects and changes each key in each object from -> to
   arr.map(function(o) {
-    var value = o[from];
+    let value = o[from];
     o[to] = value;
   })
     return arr
 };
 
+//get stuctures used in console
+function get_struct() {
+   console.log(JSON.stringify($$("table").getStructure()))
+};
+
 //webix objects
-var start_picker = {
+let start_picker = {
   view:"datepicker", value: d, timepicker:true, label:"Start Date",
   id: "start", name:"start", stringResult:true, format:"%d %M %Y at %H:%i", width: 275
 };
 
-var end_picker   = {
+let end_picker  = {
   view:"datepicker", value: new Date(), timepicker:true, label:"End Date",
   name:"end", id: "end", stringResult:true, format:"%d %M %Y at %H:%i", width: 275
 }
 
-var customer = {
+let customer = {
   view:"combo", id:"customer", width:275, label:'Customers',
   options:{
     filter:function(item, value){
@@ -91,7 +109,7 @@ var customer = {
   }
 }
 
-var uuid = {
+let uuid = {
   view:"combo", id:"uuid", width:255, label:"Name", value:1, labelWidth:50,
   options:{
     filter:function(item, value){
@@ -103,51 +121,63 @@ var uuid = {
   }
 }
 
-var submit = {
-    view: "button", label: "Submit", width: 100, click: gen_file_url
-}
+let structures_list = {
+  view:"list", id:"struct_list", template:"#name#",
+  data: structures, select:true, rowHeight:10, height:200
+};
 
-var files = {
+let files = {
   multi:true, view:"accordion",
   cols:[
     { header:"Files", width: 200,
-    body:{
-      view:"list", id:"files", template:"#name#",
-      data: "", select:true, rowHeight:10
-    }
-  }]
-};
+      body:{
+        rows:[{
+            view:"list", id:"files", template:"#name#",
+            data: "", select:true, rowHeight:10
+          }]
+    }}
+]};
 
-var table = {
-  view:"datatable",
+let table = {
+  view: "pivot",
   id: "table",
   columns: cols,
-  data: "",
-  rowHeight:30,
-  headerHeight: 100
+  structure: default_struc
 }
 
-var space = {width:50}
 //webix ui
 webix.ui({
   container: "app",
   rows:[
-    { cols: [ start_picker, {width:50}, end_picker, {width:50}, customer,{width:50}, uuid, {width:50}, submit,{}] },
+    { cols: [ start_picker, {width:50}, end_picker, {width:50}, customer,{width:50}, uuid, {width:50}, {}] },
     {height: 10},
-    { cols:[ files, table]}
+    { cols:[files, table]}
   ]
 }).show();
 
-
-//fetching customer
-var customers = [];
+//initial customer fetching
+const customers = [];
 http_request(home, function() {
     data.forEach( o => customers.push({name: o, id: o}) )
     $$("customer").getPopup().getList().parse(customers)
 })
 
+//adding avg operation
+$$("table").addOperation("avr", function(data) {
+      let sum = 0;
+      for (let i = 0; i < data.length; i++) {
+                if( data[i] )
+                  sum += window.parseFloat(data[i], 10);
+            }
+      return data.length?(sum/data.length):0;
+});
+
 //getting data for UUID and names
 $$("customer").attachEvent("onchange", function(new_value, old_value){
+  $$("uuid").setValue();
+  $$("table").clearAll();
+  $$("files").clearAll();
+
   let url = home + "/" + new_value + "/details";
   http_request(url, function() {
     $$("uuid").getPopup().getList().clearAll();
@@ -156,64 +186,86 @@ $$("customer").attachEvent("onchange", function(new_value, old_value){
   });
 });
 
-// get files list
-function gen_file_url() {
-  customer = $$("customer").getText();
-  var uuid_choice = $$("uuid").getValue();
-  var start_time = str_date($$("start").getValue()).getTime()/1000;
-  var end_time = str_date($$("end").getValue()).getTime()/1000;
-  current_url = home.concat("/", customer, "/files/", uuid_choice, "?start_time=", start_time, "?end_time=", end_time)
-  console.log(current_url)
+// load file list
+$$("start").attachEvent("onchange", function(new_value, old_value){
+  let customer = $$("customer").getText();
+  let uuid = $$("uuid").getValue();
+  let start = str_date(new_value).getTime()/1000;
+  let end = str_date($$("end").getValue()).getTime()/1000;
 
-  http_request(current_url, function() {
+  if (uuid==1) {
+    webix.message("Choose a server")
+  }else{
+    get_list(customer, uuid, start, end)
+  }
+});
+$$("end").attachEvent("onchange", function(new_value, old_value){
+  let customer = $$("customer").getText();
+  let uuid = $$("uuid").getValue();
+  let start = str_date($$("start").getValue()).getTime()/1000;
+  let end = str_date($$("end").getValue()).getTime()/1000;
+
+  if (uuid==1) {
+    webix.message("choose a server")
+  }else{
+    get_list(customer, uuid, start, end)
+  }
+});
+$$("uuid").attachEvent("onchange", function(new_value, old_value){
+  let customer = $$("customer").getText();
+  let uuid = new_value
+  let start = str_date($$("start").getValue()).getTime()/1000;
+  let end = str_date($$("end").getValue()).getTime()/1000;
+
+  get_list(customer, uuid, start, end)
+});
+
+//get list function
+function get_list(customer, uuid, start, end) {
+  $$("table").clearAll();
+  let url = home + "/" + customer + "/files/" + uuid + "?start_time=" + start + "&end_time=" + end;
+  console.log(url)
+
+  http_request(url, function() {
     //parsing data to pass to list with proper date name and file
-    var files = [];
+    $$("files").clearAll();
+    if (data.length == 0) {
+      webix.message("No data in that time range")
+    } else {
+    let files = [];
     data.sort().forEach(function(o) {
-      var date = file_date.exec(o);
-      var zone = date[7]
+      let date = file_date.exec(o);
+      let zone = date[7]
       date = myformat(file_to_date(date.slice(1,6).join("-"))).concat(" ", zone)
       files.push({name: date, id: o})
     });
-    $$("files").clearAll();
     $$("files").parse(files);
-  })
+    }
+  });
 }
-i = 0
-var cached_tables = [];
 
-//  loading tables from list
-$$("files").attachEvent("onSelectChange", function(id, e, node){
-  var item = this.getItem(id);
+// http request to get and load table
+$$("files").attachEvent("onSelectChange", function(id, e, node)  {
   $$("table").clearAll();
-  url = home.concat("/", customer, "/psdata?filename=", item.id)
+  let item = this.getItem(id);
+  let customer = $$("customer").getText();
+  let url = home + "/" + customer + "/psdata?filename=" + item.id
   console.log(url)
   http_request(url, function() {
-    console.log("loading uncached table")
-    $$("table").parse(data)
-  })
-})
-
-/*
-$$("files").attachEvent("onSelectChange", function(id, e, node){;
-  var item = this.getItem(id);
-  $$("table").clearAll();
-
-  console.log("selected file  " + item.id)
-  //console.log(cached_tables)
-
-  if (item.name in cached_tables) {
-    console.log("loading cached table " + item.name)
-    $$("table").parse(cached_tables[item.name])
-  } else {
-    url = home.concat("/", customer, "/psdata?filename=", item.id)
-    console.log(url)
-    http_request(url, function() {
-      console.log("loading uncached table")
-
+    if (data.length == 0) {
+      webix.message("File did not return data")
+    } else {
       $$("table").parse(data)
-      cached_tables[item.name] = data
-    })
-  }
-})
-*/
+      $$("table").$$("data").closeAll();
+    }
+  })
+});
 
+// Not in use
+/* used to set structures
+$$("struct_list").attachEvent("onSelectChange", function(id, e, node)  {
+  console.log("gay")
+  let item = this.getItem(id);
+  $$("table").setStructure(item.structure)
+});
+*/
