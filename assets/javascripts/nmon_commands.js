@@ -2,7 +2,6 @@
 //probs not needed
 
 //Variables
-const home = "http://karl.galileosuite.com:10999/api/v1/customer";
 
 const cols = [
   { id:"time"    ,  header:["Interval"] , sort:"string",  width:90 },
@@ -37,7 +36,7 @@ const default_struc = {
 const structures = [{name:"Default", id:1, structure:default_struc}]
 
 var d = new Date();
-d.setHours(d.getHours() - 1)
+d.setHours(d.getHours() - 4)
 
 const str_date = webix.Date.strToDate("%Y-%m-%d %H:%i");
 
