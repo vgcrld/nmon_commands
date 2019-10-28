@@ -1,8 +1,8 @@
 {
-  "name": "webix-pivot",
-  "productTag": "pivot",
-  "version": "6.4.5",
-  "description": "Javascript Pivot for Web",
+  "name": "webix",
+  "productTag": "webix",
+  "version": "7.0.3",
+  "description": "Javascript UI for Web",
   "scripts": {
     "lint": "yarn eslint \"sources/**/*.js\"",
     "build": "rollup -c ./rollup.config.js",

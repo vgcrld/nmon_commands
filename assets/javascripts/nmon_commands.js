@@ -34,13 +34,13 @@ const cols = [
 // };
 
 const default_struc = {
+  filters: [
+  ],
   rows: [ "USER" ],
   columns: [ "time" ],
   values:[
     { name: "%CPU", "text": "%CPU", "id": 1572125101549, "operation": ["avr"] }
   ],
-  filters: [
-  ]
 };
 
 const structures = [{name:"Default", id:1, structure:default_struc}]
