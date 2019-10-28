@@ -20,17 +20,27 @@ const cols = [
   { id:"ARGS"    ,  header:"ARGS"       , sort:"string",  width:1500, }
 ];
 
+// const default_struc = {
+//   "rows":["USER","PID"],
+//   "columns":[],
+//   "values":[
+//     {"name":"TIME","text":"TIME","id":1572125101547,"operation":["count"]},
+//     {"name":"%CPU","text":"%CPU","id":1572125101549,"operation":["avr"]},
+//     {"name":"%MEM","text":"%MEM","id":1572125101550,"operation":["avr"]},
+//     {"name":"VSZ","text":"VSZ","id":1572125101552,"operation":["avr"]},
+//     {"name":"PAGEIN","text":"PAGEIN","id":1572125101553,"operation":["avr"]},
+//     {"name":"ELAPSED","text":"ELAPSED","id":1572125101548,"operation":["avr"]}
+//   ],
+// };
+
 const default_struc = {
-  "rows":["USER","PID"],
-  "columns":[],
-  "values":[
-    {"name":"TIME","text":"TIME","id":1572125101547,"operation":["count"]},
-    {"name":"%CPU","text":"%CPU","id":1572125101549,"operation":["avr"]},
-    {"name":"%MEM","text":"%MEM","id":1572125101550,"operation":["avr"]},
-    {"name":"VSZ","text":"VSZ","id":1572125101552,"operation":["avr"]},
-    {"name":"PAGEIN","text":"PAGEIN","id":1572125101553,"operation":["avr"]},
-    {"name":"ELAPSED","text":"ELAPSED","id":1572125101548,"operation":["avr"]}
+  rows: [ "USER" ],
+  columns: [ "time" ],
+  values:[
+    { name: "%CPU", "text": "%CPU", "id": 1572125101549, "operation": ["avr"] }
   ],
+  filters: [
+  ]
 };
 
 const structures = [{name:"Default", id:1, structure:default_struc}]

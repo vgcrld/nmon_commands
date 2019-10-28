@@ -7,7 +7,8 @@ require 'optimist'
 HOME = NmonCommands::HOME
 
 opts = Optimist::options do
-  opt :port, "Port", default: 10111, type: :integer
+  opt :port, "Port", default: 10111,      type: :integer
+  opt :bind, "Bind", default: '0.0.0.0',  type: :string
 end
 
 config = OpenStruct.new(
@@ -17,7 +18,7 @@ config = OpenStruct.new(
    views: File.join(HOME, 'templates'),
   public: File.join(HOME, 'assets'),
     port: opts[:port],
-    bind: "0.0.0.0",
+    bind: opts[:bind],
      run: true
 )
 
