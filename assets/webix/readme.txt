@@ -1,4 +1,4 @@
-Webix Pivot v.7.0.3
+Webix UI v.7.0.3
 ================
 
 https://webix.com
@@ -6,13 +6,13 @@ https://webix.com
 If you don't know where to start - check 
 
 - https://webix.com/quick-start/#!/1
-- https://docs.webix.com/desktop__pivot.html
+- https://docs.webix.com/
 - https://forum.webix.com
 
 
 ### License terms
 
-Webix Pivot library is licensed under Webix Trial Developer License Agreement
+Webix UI library is licensed under Webix Trial Developer License Agreement
 Check - Webix Trial Developer License Agreement file in this archive
 
 ** What does it means in human terms **

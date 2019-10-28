@@ -2,7 +2,6 @@
 //probs not needed
 
 //Variables
-const home = "http://karl.galileosuite.com:10999/api/v1/customer";
 
 const cols = [
   { id:"time"    ,  header:["Interval"] , sort:"string",  width:90 },
@@ -21,23 +20,33 @@ const cols = [
   { id:"ARGS"    ,  header:"ARGS"       , sort:"string",  width:1500, }
 ];
 
+// const default_struc = {
+//   "rows":["USER","PID"],
+//   "columns":[],
+//   "values":[
+//     {"name":"TIME","text":"TIME","id":1572125101547,"operation":["count"]},
+//     {"name":"%CPU","text":"%CPU","id":1572125101549,"operation":["avr"]},
+//     {"name":"%MEM","text":"%MEM","id":1572125101550,"operation":["avr"]},
+//     {"name":"VSZ","text":"VSZ","id":1572125101552,"operation":["avr"]},
+//     {"name":"PAGEIN","text":"PAGEIN","id":1572125101553,"operation":["avr"]},
+//     {"name":"ELAPSED","text":"ELAPSED","id":1572125101548,"operation":["avr"]}
+//   ],
+// };
+
 const default_struc = {
-  "rows":["USER","PID"],
-  "columns":[],
-  "values":[
-    {"name":"TIME","text":"TIME","id":1572125101547,"operation":["count"]},
-    {"name":"%CPU","text":"%CPU","id":1572125101549,"operation":["avr"]},
-    {"name":"%MEM","text":"%MEM","id":1572125101550,"operation":["avr"]},
-    {"name":"VSZ","text":"VSZ","id":1572125101552,"operation":["avr"]},
-    {"name":"PAGEIN","text":"PAGEIN","id":1572125101553,"operation":["avr"]},
-    {"name":"ELAPSED","text":"ELAPSED","id":1572125101548,"operation":["avr"]}
+  filters: [
+  ],
+  rows: [ "USER" ],
+  columns: [ "time" ],
+  values:[
+    { name: "%CPU", "text": "%CPU", "id": 1572125101549, "operation": ["avr"] }
   ],
 };
 
 const structures = [{name:"Default", id:1, structure:default_struc}]
 
 var d = new Date();
-d.setHours(d.getHours() - 1)
+d.setHours(d.getHours() - 4)
 
 const str_date = webix.Date.strToDate("%Y-%m-%d %H:%i");
 

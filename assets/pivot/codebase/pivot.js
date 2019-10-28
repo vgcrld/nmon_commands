@@ -1,6 +1,6 @@
 /**
  * @license
- * Webix Pivot v.6.4.5
+ * Webix Pivot v.7.0.3
  * This software is covered by Webix Trial License.
  * Usage without proper license is prohibited.
  * (c) XB Software Ltd.
